@@ -1,0 +1,98 @@
+generated: '2026-08-01'
+method: derived
+source: >-
+  Derived from the schema $ref graph and id-reference fields in
+  openapi/cloudwalk-infinitepay-checkout-openapi.yml, which was itself transcribed from
+  https://www.infinitepay.io/checkout-documentacao and
+  https://www.infinitepay.io/checkout-tap.
+docs: https://www.infinitepay.io/checkout-documentacao
+notation: >-
+  relationships use has_one / has_many / belongs_to with the foreign-key or embedding field
+  name; direction is from the entity that owns the reference.
+description: >-
+  The entity graph behind CloudWalk's public InfinitePay integration surface. It is small and
+  transaction-shaped: a merchant identified by a public handle creates a checkout link over a
+  basket of items, a buyer pays it, and the resulting transaction is reported back three ways
+  (webhook, redirect query string, payment_check poll). There is no customer object, no
+  saved payment method, no subscription and no ledger in the public API — those live behind
+  the InfinitePay app, not the API.
+entities:
+- name: Merchant
+  key: handle
+  key_format: InfiniteTag (app username, sent without the leading "$")
+  domain: identity
+  description: The InfinitePay seller. The only identity in the public API; not a secret.
+- name: CheckoutLink
+  key: slug
+  alt_keys: [checkout_url, link, invoice_slug]
+  domain: checkout
+  description: >-
+    A hosted payment page created over a basket of items. Identified by `slug` on creation
+    and by `invoice_slug` on the webhook — the same value under two names.
+- name: Item
+  key: null
+  domain: checkout
+  description: A line on a checkout link — quantity, unit price in cents, description. Embedded, never referenced by id.
+- name: Customer
+  key: null
+  domain: checkout
+  description: Optional buyer details (name, email, phone_number) used only to pre-fill the hosted checkout form. Not a persisted, addressable object in the public API.
+- name: Address
+  key: null
+  domain: checkout
+  description: Optional Brazilian delivery address (cep, street, neighborhood, number, complement). Embedded on the link.
+- name: Order
+  key: order_nsu
+  domain: merchant-side
+  description: >-
+    The merchant's own order, referenced by `order_nsu`. Owned by the merchant's system, not
+    by InfinitePay; InfinitePay generates a random value when one is not supplied.
+- name: Transaction
+  key: transaction_nsu
+  key_format: UUID
+  domain: payments
+  description: >-
+    A completed payment attempt against a checkout link. Carries amount, paid_amount,
+    installments and capture_method (credit_card or pix).
+- name: Receipt
+  key: receipt_url
+  domain: payments
+  description: The buyer-facing proof of payment, returned as a URL on both the webhook and the redirect.
+- name: PaymentApprovedEvent
+  key: null
+  domain: events
+  description: The single webhook event, POSTed to the link's webhook_url when payment is approved.
+- name: TapTransaction
+  key: nsu
+  alt_keys: [aut]
+  domain: in-person
+  description: >-
+    An InfiniteTap (Tap to Pay) card transaction completed in the InfinitePay mobile app and
+    returned to a third-party POS app over the result deeplink. Carries nsu (UUID),
+    aut (authorization code), card_brand, user_id, access_id, handle and merchant_document.
+relationships:
+- {from: Merchant, to: CheckoutLink, kind: has_many, via: handle}
+- {from: CheckoutLink, to: Item, kind: has_many, via: items}
+- {from: CheckoutLink, to: Customer, kind: has_one, via: customer}
+- {from: CheckoutLink, to: Address, kind: has_one, via: address}
+- {from: CheckoutLink, to: Order, kind: belongs_to, via: order_nsu}
+- {from: CheckoutLink, to: Transaction, kind: has_many, via: slug}
+- {from: Transaction, to: CheckoutLink, kind: belongs_to, via: invoice_slug}
+- {from: Transaction, to: Order, kind: belongs_to, via: order_nsu}
+- {from: Transaction, to: Receipt, kind: has_one, via: receipt_url}
+- {from: PaymentApprovedEvent, to: Transaction, kind: belongs_to, via: transaction_nsu}
+- {from: PaymentApprovedEvent, to: CheckoutLink, kind: belongs_to, via: invoice_slug}
+- {from: PaymentApprovedEvent, to: Item, kind: has_many, via: items}
+- {from: Merchant, to: TapTransaction, kind: has_many, via: handle}
+- {from: TapTransaction, to: Order, kind: belongs_to, via: order_id}
+identifier_notes:
+- 'nsu = "Número Sequencial Único", the Brazilian card-acquiring transaction sequence number. CloudWalk uses UUIDs in that field on the checkout API.'
+- 'The same checkout link is called `slug` on creation, `slug` on payment_check, and `invoice_slug` on the webhook. Name-drift, not three entities.'
+- 'The InfiniteTap deeplink uses `order_id` where the checkout API uses `order_nsu` for the same merchant-side concept.'
+- 'Amounts are always integers in Brazilian cents; `paid_amount` may exceed `amount` when installment fees are passed to the buyer.'
+gaps:
+- No refund, cancellation, dispute or chargeback object in the public API.
+- No settlement, payout or balance object.
+- No addressable customer or saved payment-method object.
+- No list/search operations — every object is reachable only by identifiers you already hold.
+render: null

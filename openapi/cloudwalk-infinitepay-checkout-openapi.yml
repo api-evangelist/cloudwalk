@@ -1,0 +1,356 @@
+openapi: 3.1.0
+info:
+  title: InfinitePay Checkout API
+  version: '2026-08-01'
+  summary: Generate InfinitePay hosted checkout payment links and query their payment status.
+  description: >-
+    The InfinitePay Integrated Checkout ("Checkout Integrado") API, operated by CloudWalk
+    Inc. It has two public operations: create a hosted checkout link for a basket of items,
+    and check the payment status of a previously created link. Payment is completed on the
+    InfinitePay-hosted checkout page (checkout.infinitepay.io); the merchant is identified by
+    its InfiniteTag `handle` rather than by an API key. Amounts are always integers in
+    Brazilian cents (R$ 10,00 = 1000). Supported capture methods are `credit_card`
+    (up to 12 installments) and `pix`.
+
+
+    PROVENANCE: this document was NOT published by CloudWalk. It is a faithful transcription
+    of CloudWalk's own live, public API reference at
+    https://www.infinitepay.io/checkout-documentacao (fetched 2026-08-01), with every path,
+    field name, type and example taken verbatim from that page. Both hosts were probed live
+    on 2026-08-01 to confirm the routes exist (see x-evidence). No operation, field or
+    response has been invented; where the published reference is silent (error catalogue,
+    rate limits, sandbox) this spec is silent too.
+  contact:
+    name: InfinitePay / CloudWalk partner integrations
+    email: parcerias@cloudwalk.io
+    url: https://www.infinitepay.io/desenvolvedores
+  termsOfService: https://www.infinitepay.io/legal/termos-de-uso
+x-evidence:
+  fetched: '2026-08-01'
+  transcribed_from: https://www.infinitepay.io/checkout-documentacao
+  probes:
+    - {url: 'https://api.checkout.infinitepay.io/', method: GET, http_status: 200, body: 'OK <timestamp>'}
+    - {url: 'https://api.checkout.infinitepay.io/links', method: POST, request: '{}', http_status: 400, body: '{"success":false,"message":"param is missing or the value is empty or invalid: handle"}'}
+    - {url: 'https://api.checkout.infinitepay.io/payment_check', method: POST, request: '{}', http_status: 404, body: '{"success":false,"message":"Not found"}'}
+    - {url: 'https://api.infinitepay.io/invoices/public/checkout/links', method: POST, request: '{}', http_status: 400, body: '{"success":false,"message":"param is missing or the value is empty or invalid: handle"}'}
+    - {url: 'https://api.checkout.infinitepay.io/openapi.json', method: GET, http_status: 404, note: 'provider publishes no machine-readable spec at any probed path'}
+  spec_search:
+    - {path: /openapi.json, status: 404}
+    - {path: /openapi.yaml, status: 404}
+    - {path: /swagger.json, status: 404}
+    - {path: /api-docs, status: 401}
+    - {path: /redoc, status: 404}
+servers:
+  - url: https://api.checkout.infinitepay.io
+    description: Production checkout API host (the host named in the current published reference).
+  - url: https://api.infinitepay.io/invoices/public/checkout
+    description: >-
+      Legacy path-based host for the same two operations. Probed live 2026-08-01 and still
+      answering (POST /links returned the same 400 handle-validation error).
+tags:
+  - name: Checkout Links
+    description: Create InfinitePay-hosted checkout payment links.
+  - name: Payments
+    description: Query the payment status of a checkout link.
+paths:
+  /links:
+    post:
+      tags: [Checkout Links]
+      operationId: createCheckoutLink
+      summary: Create a checkout payment link
+      description: >-
+        Creates an InfinitePay-hosted checkout link for a basket of items. The response
+        carries the URL the buyer is sent to in order to pay by credit card (up to 12
+        installments) or Pix.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckoutLinkRequest'
+            examples:
+              minimal:
+                summary: Minimal payload (from the published reference)
+                value:
+                  handle: colakids
+                  items:
+                    - quantity: 1
+                      price: 1000
+                      description: Produto de Exemplo
+              full:
+                summary: Full payload with tracking, redirect, webhook, customer and address
+                value:
+                  handle: colakids
+                  items:
+                    - quantity: 1
+                      price: 1000
+                      description: Produto de Exemplo
+                  order_nsu: order-nsu-123
+                  redirect_url: https://seusite.com/pagamento-concluido
+                  webhook_url: https://seusite.com/webhook-infinitepay
+                  customer:
+                    name: João Silva
+                    email: joao@email.com
+                    phone_number: '+5511999887766'
+                  address:
+                    cep: '12345678'
+                    street: Rua das Flores
+                    neighborhood: Centro
+                    number: '123'
+                    complement: Apto 45
+      responses:
+        '200':
+          description: Checkout link created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCheckoutLinkResponse'
+              examples:
+                checkoutUrl:
+                  value:
+                    checkout_url: https://checkout.infinitepay.io/colakids/1RxANX7tdF
+        '400':
+          description: >-
+            A required parameter is missing or invalid. Observed live 2026-08-01 for an empty
+            body.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingHandle:
+                  value:
+                    success: false
+                    message: 'param is missing or the value is empty or invalid: handle'
+  /payment_check:
+    post:
+      tags: [Payments]
+      operationId: checkPaymentStatus
+      summary: Check the payment status of a checkout link
+      description: >-
+        Returns whether a checkout link has been paid, the amount charged, the number of
+        installments and the capture method. Used as the pull-based alternative to the
+        webhook.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCheckRequest'
+            examples:
+              published:
+                value:
+                  handle: sua_infinite_tag
+                  order_nsu: '123456'
+                  transaction_nsu: UUID-que-recebeu
+                  slug: codigo-da-fatura
+      responses:
+        '200':
+          description: Payment status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentCheckResponse'
+              examples:
+                paidWithPix:
+                  value:
+                    success: true
+                    paid: true
+                    amount: 1500
+                    paid_amount: 1510
+                    installments: 1
+                    capture_method: pix
+        '404':
+          description: >-
+            No matching invoice/transaction for the supplied identifiers. Observed live
+            2026-08-01 for an empty body.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notFound:
+                  value:
+                    success: false
+                    message: Not found
+webhooks:
+  paymentApproved:
+    post:
+      operationId: onPaymentApproved
+      summary: Payment approved notification
+      description: >-
+        When a payment is approved InfinitePay POSTs this payload to the `webhook_url`
+        supplied on the checkout link. The published reference asks the receiver to answer
+        within about one second with 200 OK to acknowledge, or 400 Bad Request to have the
+        notification retried.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentApprovedEvent'
+            examples:
+              approved:
+                value:
+                  invoice_slug: abc123
+                  amount: 1000
+                  paid_amount: 1010
+                  installments: 1
+                  capture_method: credit_card
+                  transaction_nsu: UUID
+                  order_nsu: UUID-do-pedido
+                  receipt_url: https://comprovante.com/123
+                  items:
+                    - quantity: 1
+                      price: 1000
+                      description: Produto de Exemplo
+      responses:
+        '200':
+          description: Notification acknowledged.
+        '400':
+          description: Receiver reported a problem; InfinitePay retries delivery.
+components:
+  schemas:
+    Item:
+      type: object
+      required: [quantity, price, description]
+      properties:
+        quantity:
+          type: integer
+          description: Quantity of the item.
+          examples: [1]
+        price:
+          type: integer
+          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
+          examples: [1000]
+        description:
+          type: string
+          description: Item description shown on the checkout page.
+          examples: [Produto de Exemplo]
+    Customer:
+      type: object
+      description: Optional buyer details used to pre-fill the hosted checkout form.
+      properties:
+        name: {type: string, examples: [João Silva]}
+        email: {type: string, format: email, examples: [joao@email.com]}
+        phone_number: {type: string, examples: ['+5511999887766']}
+    Address:
+      type: object
+      description: Optional Brazilian delivery address used to pre-fill the hosted checkout form.
+      properties:
+        cep: {type: string, description: Brazilian postal code, examples: ['12345678']}
+        street: {type: string, examples: [Rua das Flores]}
+        neighborhood: {type: string, examples: [Centro]}
+        number: {type: string, examples: ['123']}
+        complement: {type: string, examples: [Apto 45]}
+    CreateCheckoutLinkRequest:
+      type: object
+      required: [handle, items]
+      properties:
+        handle:
+          type: string
+          description: >-
+            The merchant's InfiniteTag (username in the InfinitePay app) without the leading
+            "$". This is the only merchant credential the published reference requires.
+          examples: [colakids]
+        items:
+          type: array
+          minItems: 1
+          items: {$ref: '#/components/schemas/Item'}
+          description: >-
+            The products or services being purchased. At least one item is required. NOTE:
+            the published reference is inconsistent about this key — the "Itens do Pedido"
+            snippet spells it `itens` (Portuguese) while the interactive generated payload
+            and the response examples spell it `items`. Both spellings appear on the
+            provider's own page; recorded here as published rather than resolved, because
+            neither could be disambiguated without creating a live payment link.
+        order_nsu:
+          type: string
+          description: >-
+            Optional merchant-side order identifier used to correlate the checkout link with
+            an order in your system. If omitted InfinitePay generates a random value. It is a
+            correlation key, not an idempotency key — the reference does not state that
+            reusing it replays a prior response.
+          examples: [order-nsu-123]
+        redirect_url:
+          type: string
+          format: uri
+          description: >-
+            Optional URL the buyer is sent to after paying. InfinitePay appends
+            receipt_url, order_nsu, slug, capture_method and transaction_nsu as query
+            parameters.
+          examples: [https://seusite.com/pagamento-concluido]
+        webhook_url:
+          type: string
+          format: uri
+          description: Optional URL that receives the paymentApproved webhook.
+          examples: [https://seusite.com/webhook-infinitepay]
+        customer: {$ref: '#/components/schemas/Customer'}
+        address: {$ref: '#/components/schemas/Address'}
+      x-alias-fields:
+        items: [itens]
+    CreateCheckoutLinkResponse:
+      type: object
+      description: >-
+        The published reference shows two response shapes for this operation on the same
+        page — `{checkout_url}` in the interactive section and `{link, slug}` in the API
+        summary block. Both are recorded; `checkout_url` is the one shown by the live
+        interactive builder.
+      properties:
+        checkout_url:
+          type: string
+          format: uri
+          description: The InfinitePay-hosted checkout page URL to send the buyer to.
+          examples: [https://checkout.infinitepay.io/colakids/1RxANX7tdF]
+        link:
+          type: string
+          format: uri
+          description: The generated payment link (alternate field name shown in the reference).
+        slug:
+          type: string
+          description: The InfinitePay invoice code for the generated link.
+          examples: [abcdef123]
+    PaymentCheckRequest:
+      type: object
+      required: [handle, order_nsu, transaction_nsu, slug]
+      properties:
+        handle: {type: string, description: The merchant's InfiniteTag without the leading "$".}
+        order_nsu: {type: string, description: The order number in the merchant's system.}
+        transaction_nsu: {type: string, description: The unique transaction identifier returned after payment.}
+        slug: {type: string, description: The InfinitePay invoice code.}
+    PaymentCheckResponse:
+      type: object
+      properties:
+        success: {type: boolean, description: Whether the request succeeded.}
+        paid: {type: boolean, description: Whether the checkout link has been paid.}
+        amount: {type: integer, description: Original amount in cents.}
+        paid_amount: {type: integer, description: Amount actually paid in cents (may include installment fees passed to the buyer).}
+        installments: {type: integer, description: Number of installments.}
+        capture_method:
+          type: string
+          description: How the payment was captured.
+          enum: [credit_card, pix]
+    PaymentApprovedEvent:
+      type: object
+      properties:
+        invoice_slug: {type: string, examples: [abc123]}
+        amount: {type: integer, description: Original amount in cents.}
+        paid_amount: {type: integer, description: Amount paid in cents.}
+        installments: {type: integer}
+        capture_method: {type: string, enum: [credit_card, pix]}
+        transaction_nsu: {type: string, description: Unique transaction identifier (UUID format).}
+        order_nsu: {type: string, description: The merchant order identifier supplied on the link.}
+        receipt_url: {type: string, format: uri, description: Link to the payment receipt.}
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/Item'}
+    Error:
+      type: object
+      description: >-
+        The error envelope observed live on both hosts. CloudWalk publishes no error
+        reference for this API; the shape below is what the API actually returned when
+        probed on 2026-08-01.
+      properties:
+        success: {type: boolean, examples: [false]}
+        message: {type: string, description: Human-readable error message (application-level errors).}
+        error: {type: string, description: Alternate key returned by the routing layer for unknown paths.}

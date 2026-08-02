@@ -1,0 +1,88 @@
+generated: '2026-08-01'
+method: searched
+source: https://www.infinitepay.io/checkout-documentacao
+spec_type: none
+description: >-
+  CloudWalk publishes no AsyncAPI document for InfinitePay — /asyncapi.yaml and /asyncapi.json
+  were probed on every host and the CloudWalk GitHub organization was searched, with no
+  result. It does document a real, single-event webhook surface for the Integrated Checkout,
+  captured here as a webhook catalogue. There is no webhook management API, no signature
+  scheme, and no event-type envelope: the merchant supplies a webhook_url per checkout link
+  and receives one POST when that link is paid.
+delivery:
+  transport: HTTPS POST
+  content_type: application/json
+  subscription: >-
+    Per-link. The receiving URL is supplied as the optional `webhook_url` field on
+    POST /links. There is no webhook registration endpoint and no account-wide endpoint
+    configuration in the published API.
+  acknowledgement:
+    success: '200 OK'
+    failure: '400 Bad Request'
+    expected_latency: 'The reference asks receivers to respond in under ~1 second.'
+  retries: >-
+    Documented behaviour: responding 400 causes InfinitePay to attempt delivery again. The
+    reference does not publish a retry schedule, a maximum attempt count or a backoff policy.
+  signing: >-
+    None published. The reference documents no signature header, no shared secret and no
+    replay window. The reference's own guidance is to validate that the received `order_nsu`
+    corresponds to a real order in your system.
+  ordering: not specified
+  idempotency: >-
+    Not specified. Because retries are documented but delivery semantics are not, receivers
+    should treat the webhook as at-least-once and de-duplicate on `transaction_nsu`.
+events:
+- name: payment_approved
+  description: Sent when a payment against a checkout link is approved.
+  trigger: Buyer completes payment on the InfinitePay-hosted checkout page.
+  operation: openapi/cloudwalk-infinitepay-checkout-openapi.yml#/webhooks/paymentApproved
+  payload:
+  - {field: invoice_slug, type: string, description: The InfinitePay invoice code for the link.}
+  - {field: amount, type: integer, description: Original amount in Brazilian cents.}
+  - {field: paid_amount, type: integer, description: Amount actually paid in cents.}
+  - {field: installments, type: integer, description: Number of installments.}
+  - {field: capture_method, type: string, description: 'credit_card or pix'}
+  - {field: transaction_nsu, type: string, description: Unique transaction identifier (UUID format).}
+  - {field: order_nsu, type: string, description: The merchant order identifier supplied when the link was created.}
+  - {field: receipt_url, type: string, description: Link to the buyer's payment receipt.}
+  - {field: items, type: array, description: The items the link was created with (quantity, price, description).}
+  example:
+    invoice_slug: abc123
+    amount: 1000
+    paid_amount: 1010
+    installments: 1
+    capture_method: credit_card
+    transaction_nsu: UUID
+    order_nsu: UUID-do-pedido
+    receipt_url: https://comprovante.com/123
+    items:
+    - {quantity: 1, price: 1000, description: Produto de Exemplo}
+polling_alternative:
+  description: >-
+    The documented pull-based alternative to the webhook, for merchants that cannot expose a
+    public endpoint.
+  operation: openapi/cloudwalk-infinitepay-checkout-openapi.yml#checkPaymentStatus
+  endpoint: POST https://api.checkout.infinitepay.io/payment_check
+redirect_callback:
+  description: >-
+    Not a webhook, but the third documented completion signal: after paying, the buyer clicks
+    "Continuar" and is returned to the merchant's `redirect_url` with query parameters.
+  parameters: [receipt_url, order_nsu, slug, capture_method, transaction_nsu]
+  caveat: >-
+    Browser-supplied and therefore untrusted — the reference itself steers integrators toward
+    the webhook or payment_check for confirmation.
+gaps:
+- No AsyncAPI or other machine-readable event contract.
+- Single event type only; no refund, chargeback, dispute or settlement events published.
+- No webhook signing or authentication mechanism published.
+- No published retry schedule or delivery guarantees.
+x-evidence:
+  fetched: '2026-08-01'
+  url: https://www.infinitepay.io/checkout-documentacao
+  http_status: 200
+  asyncapi_probe:
+  - {url: 'https://api.checkout.infinitepay.io/asyncapi.yaml', status: 404}
+  - {url: 'https://api.checkout.infinitepay.io/asyncapi.json', status: 404}
+  - {url: 'https://api.infinitepay.io/asyncapi.yaml', status: 403}
+  - {url: 'https://www.infinitepay.io/asyncapi.yaml', status: 404}
+  - {source: 'github.com/cloudwalk code search filename:asyncapi', results: 0}

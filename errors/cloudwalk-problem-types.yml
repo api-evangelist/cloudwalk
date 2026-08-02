@@ -1,0 +1,92 @@
+generated: '2026-08-01'
+method: probed
+source: >-
+  Live probes of https://api.checkout.infinitepay.io and
+  https://api.infinitepay.io/invoices/public/checkout on 2026-08-01, plus
+  https://www.infinitepay.io/checkout-documentacao.
+format: proprietary
+rfc9457: false
+description: >-
+  CloudWalk publishes NO error reference for the InfinitePay Checkout API — the documentation
+  page describes only happy-path payloads. The entries below are the error responses actually
+  returned by the live API when probed, plus the one error behaviour the documentation does
+  describe (the webhook 400 retry). Nothing here is inferred: every body is quoted verbatim
+  from an observed response. Errors are not RFC 9457 problem+json; they use a proprietary
+  {success,message} envelope returned with content-type application/json.
+envelope:
+  fields:
+  - {name: success, type: boolean, description: Always false on an error.}
+  - {name: message, type: string, description: Human-readable message on application-level errors.}
+  - {name: error, type: string, description: Alternate key used by the routing layer for unknown paths.}
+  no_error_code: >-
+    There is no stable machine-readable error code, error type URI, or field pointer. Clients
+    can only match on HTTP status plus free-text message, which is brittle.
+problems:
+- status: 400
+  title: Missing or invalid parameter
+  detail_example: 'param is missing or the value is empty or invalid: handle'
+  envelope_example: '{"success":false,"message":"param is missing or the value is empty or invalid: handle"}'
+  source_operation: openapi/cloudwalk-infinitepay-checkout-openapi.yml#createCheckoutLink
+  observed_at: https://api.checkout.infinitepay.io/links
+  also_observed_at: https://api.infinitepay.io/invoices/public/checkout/links
+  method: probed
+  note: >-
+    The message names the offending parameter. Validation appears to be ordered — `handle`
+    is reported first — so a client fixing one field at a time may need several round trips.
+- status: 404
+  title: Resource not found
+  detail_example: Not found
+  envelope_example: '{"success":false,"message":"Not found"}'
+  source_operation: openapi/cloudwalk-infinitepay-checkout-openapi.yml#checkPaymentStatus
+  observed_at: https://api.checkout.infinitepay.io/payment_check
+  method: probed
+  note: >-
+    Returned by payment_check when the supplied handle/order_nsu/transaction_nsu/slug
+    combination does not resolve to an invoice.
+- status: 404
+  title: Unknown path
+  detail_example: Not Found
+  envelope_example: '{"success":false,"error":"Not Found"}'
+  observed_at: https://api.checkout.infinitepay.io/<unknown-path>
+  method: probed
+  note: >-
+    Routing-layer 404 for an unrouted path. Distinguishable from the application 404 above by
+    the `error` key instead of `message` — a real inconsistency in the envelope worth
+    knowing when writing client error handling.
+- status: 401
+  title: Unauthorized
+  envelope_example: '(empty body)'
+  observed_at: https://api.checkout.infinitepay.io/api-docs
+  method: probed
+  note: >-
+    Observed while probing for a machine-readable spec; the /api-docs path exists but is
+    access-controlled. Recorded as evidence of an internal, non-public documentation surface.
+- status: 403
+  title: Forbidden (edge)
+  observed_at: https://api.infinitepay.io/openapi.yaml, https://checkout.infinitepay.io/
+  method: probed
+  note: >-
+    Cloudflare edge rejection rather than an application error. Not part of the API contract;
+    recorded so integrators can tell edge blocks apart from API errors.
+webhook_errors:
+  description: The only error behaviour CloudWalk actually documents.
+  source: https://www.infinitepay.io/checkout-documentacao
+  contract:
+  - {receiver_response: '200 OK', meaning: Notification acknowledged; no retry.}
+  - {receiver_response: '400 Bad Request', meaning: Receiver reports a problem; InfinitePay attempts delivery again.}
+  unpublished: retry schedule, maximum attempts, backoff, dead-lettering
+decline_codes:
+  published: false
+  note: >-
+    CloudWalk is a card acquirer but publishes no public decline-code reference for the
+    checkout API — the API surfaces only `paid: true|false` and `capture_method`, with no
+    decline reason. No errors/cloudwalk-decline-codes.yml artifact was written because there
+    is nothing published to capture.
+gaps:
+- No published error reference or status-code table.
+- No machine-readable error codes; free-text messages only.
+- Envelope inconsistency between application errors (`message`) and routing errors (`error`).
+- No decline reasons exposed on failed payments.
+x-evidence:
+  fetched: '2026-08-01'
+  method: 'curl -X POST -H "Content-Type: application/json" -d "{}"'

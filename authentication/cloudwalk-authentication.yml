@@ -1,0 +1,76 @@
+generated: '2026-08-01'
+method: searched
+source: >-
+  https://www.infinitepay.io/checkout-documentacao and
+  https://www.infinitepay.io/checkout-tap, plus live probes on 2026-08-01.
+docs: https://www.infinitepay.io/checkout-documentacao
+description: >-
+  CloudWalk's public InfinitePay Checkout API has NO transport-level authentication. The
+  mechanical derivation from the captured OpenAPI produced no security schemes because there
+  are none to derive — the provider genuinely publishes an unauthenticated write endpoint.
+  The merchant is identified by its InfiniteTag `handle` in the JSON request body, and the
+  InfiniteTap FAQ states outright that no API key is needed to integrate. This is recorded as
+  a finding, not a gap in our harvest.
+summary:
+  types: []
+  api_key_in: []
+  oauth2_flows: []
+  transport_auth: none
+  identification: request-body field (`handle`, the merchant's InfiniteTag)
+schemes: []
+model:
+  merchant_identifier:
+    field: handle
+    location: request body (JSON)
+    description: >-
+      The merchant's InfiniteTag — the public username in the InfinitePay app — sent without
+      its leading "$". Required on both POST /links and POST /payment_check.
+    secrecy: >-
+      Not a secret. An InfiniteTag is a public handle used for consumer payment links, so it
+      confers no authentication value.
+  provisioning: >-
+    None. There is no developer registration, no credential issuance, no dashboard key
+    management and no client_id in the published contract. Partner integration questions go
+    to parcerias@cloudwalk.io.
+  authorization: >-
+    None published. There are no scopes, roles or permissions; the two operations are the
+    entire surface.
+  payment_check_binding: >-
+    payment_check requires handle + order_nsu + transaction_nsu + slug together, so reading a
+    payment status requires possession of identifiers only the paying flow produces. That
+    quadruple acts as a weak capability check in place of authentication.
+observed_but_undocumented:
+- host: https://authorizer.infinitepay.io
+  path: /v2/cards/tokenize
+  method: POST
+  probe:
+    http_status: 400
+    date: '2026-08-01'
+  note: >-
+    A card-tokenization endpoint exists and responds. Search-engine snippets of the
+    now-offline docs.infinitepay.io referenced authenticating with a `card_tokenization`
+    scope before calling it, implying an OAuth-style scoped credential on a
+    partner-only surface. docs.infinitepay.io does not resolve in DNS (NXDOMAIN on
+    1.1.1.1 and 8.8.8.8) and has no Wayback snapshot, so nothing about that scheme could be
+    verified. Recorded as an observed endpoint only — no scopes artifact was written,
+    because there is no live published scope reference to capture.
+webhook_authentication:
+  signing: none published
+  shared_secret: none published
+  note: >-
+    Incoming webhooks carry no signature and no authentication. The provider's own guidance
+    is to validate that `order_nsu` matches a real order, then confirm via payment_check.
+    Integrators should treat the webhook as an untrusted hint and verify out of band.
+transport_security:
+  https_required: true
+  tls: TLSv1.3 observed on api.checkout.infinitepay.io
+  hsts: true
+  detail: security/cloudwalk-domain-security.yml
+gaps:
+- No API keys, tokens, OAuth or mTLS on the public checkout API.
+- Link creation is an unauthenticated write bound only to a public merchant handle.
+- No webhook signing.
+- No published credential rotation, revocation or least-privilege model.
+x-evidence:
+  fetched: '2026-08-01'
+  derive_script: 'python3 all/0-working/derive-authentication.py cloudwalk → 0 auth profiles (no securitySchemes in spec, correctly reflecting the API)'

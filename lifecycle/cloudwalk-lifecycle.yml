@@ -1,0 +1,70 @@
+generated: '2026-08-01'
+method: searched
+source: >-
+  https://www.infinitepay.io/checkout-documentacao, https://status.infinitepay.io/, and live
+  host probes on 2026-08-01.
+description: >-
+  Lifecycle posture for CloudWalk's public InfinitePay integration surface. CloudWalk runs a
+  public status page but publishes no API versioning policy, no deprecation policy, no
+  changelog and no SLA. The one observable lifecycle event is a host migration: the checkout
+  operations moved from a path on api.infinitepay.io to a dedicated
+  api.checkout.infinitepay.io host, with the old path still answering.
+versioning:
+  scheme: none
+  current: null
+  docs: null
+  detail: >-
+    The Checkout API carries no version in the path, no version header, and no dated version
+    pinning. The only versioned CloudWalk path observed anywhere is /v2/cards/tokenize on
+    authorizer.infinitepay.io, which has no live public documentation.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  detail: >-
+    No deprecation policy, no RFC 8594 Sunset/Deprecation header support observed, and no
+    advance-notice commitment. No deprecated operations exist in the captured OpenAPI.
+host_migration:
+  observed: true
+  from: https://api.infinitepay.io/invoices/public/checkout
+  to: https://api.checkout.infinitepay.io
+  both_live_on: '2026-08-01'
+  evidence:
+  - {url: 'https://api.checkout.infinitepay.io/links', method: POST, http_status: 400}
+  - {url: 'https://api.infinitepay.io/invoices/public/checkout/links', method: POST, http_status: 400}
+  note: >-
+    The current published reference names only the api.checkout host. The legacy path was
+    probed and still returns the identical validation error, so it has not been retired — but
+    because no deprecation policy exists, integrators have no notice mechanism if it is.
+    Third-party integrators have described the api.checkout host as the "new official
+    infrastructure" adopted mid-2026; CloudWalk itself has published no such statement, so
+    that timing is recorded as unconfirmed.
+sla:
+  url: null
+  uptime_target: null
+  published: false
+status_page:
+  url: https://status.infinitepay.io/
+  http_status: 200
+  title: InfinitePay - Página de Status
+  scope: InfinitePay consumer and merchant services
+  api_components_listed: unverified — the page renders its components client-side
+change_log:
+  published: false
+  detail: >-
+    No dated API changelog, release notes or version history is published for the checkout
+    API. Product announcements go out through https://www.cloudwalk.io/newsroom and
+    https://www.infinitepay.io/blog, which are marketing surfaces, not API change records.
+    No changelog/ artifact was written because there is nothing dated to capture.
+support:
+  developer_contact: parcerias@cloudwalk.io
+  merchant_support: ajuda@infinitepay.io
+  help_center: https://ajuda.infinitepay.io/pt-BR/
+  security_contact: security@cloudwalk.io
+  support_hours: 'Mon-Fri 09:00-18:00, Sat-Sun 09:00-16:00 (BRT), per the InfinitePay site footer.'
+deprecated_operations: []
+gaps:
+- No API versioning scheme.
+- No deprecation or sunset policy.
+- No API changelog.
+- No published SLA or uptime commitment.

@@ -1,0 +1,113 @@
+generated: '2026-08-01'
+method: searched
+source: >-
+  npm, PyPI, RubyGems, Packagist, crates.io and pkg.go.dev registry searches for
+  "cloudwalk", "infinitepay" and "infinitetap", plus the InfinitePay developer pages
+  (https://www.infinitepay.io/desenvolvedores) and the CloudWalk GitHub organization
+  (https://github.com/cloudwalk).
+description: >-
+  CloudWalk ships no general-purpose server-side SDK for the Integrated Checkout API — the
+  published reference is a two-endpoint JSON contract with curl-level examples and no client
+  library. What CloudWalk does publish is first-party POS runtime libraries on RubyGems (for
+  its own mruby/DaFunk card-terminal runtime) and an InfinitePay WooCommerce payment plugin
+  on Packagist, plus its BRLC smart-contract library on npm. Community-maintained client
+  libraries for the checkout API exist (a JS SDK and a PHP SDK) and are recorded here as
+  unofficial so integrators can find them without them being mistaken for first-party.
+packages:
+- language: ruby
+  registry: rubygems
+  name: infinite_pay
+  url: https://rubygems.org/gems/infinite_pay
+  install: gem install infinite_pay
+  version: 1.0.0
+  downloads: 2460
+  official: true
+  official_evidence: >-
+    homepage http://cloudwalk.io; the library starts InfinitePay transactions inside
+    CloudWalk's own DaFunk POS runtime. Published under an individual maintainer account
+    (scalone) rather than a CloudWalk org account.
+  description: InfinitePay payment library to start transactions in the DaFunk runtime.
+- language: ruby
+  registry: rubygems
+  name: infinitepay-report-pos
+  url: https://rubygems.org/gems/infinitepay-report-pos
+  install: gem install infinitepay-report-pos
+  version: 2.2.2
+  downloads: 28931
+  official: true
+  official_evidence: >-
+    homepage http://cloudwalk.io; generates reports for devices running CloudWalk's mruby
+    runtime. Published under an individual maintainer account (wrgt).
+  description: Generates POS reports for devices running the CloudWalk mruby runtime.
+- language: php
+  registry: packagist
+  name: cloudwalk/infinitepay-woocommerce-plugin
+  url: https://packagist.org/packages/cloudwalk/infinitepay-woocommerce-plugin
+  install: composer require cloudwalk/infinitepay-woocommerce-plugin
+  official: true
+  official_evidence: >-
+    published under the `cloudwalk` Packagist vendor namespace; source repository declared as
+    https://github.com/cloudwalk/infinitepay-woocommerce-plugin.
+  description: >-
+    Official InfinitePay payment method plugin for WooCommerce. NOTE — the declared GitHub
+    source repository returned 404 when probed on 2026-08-01 (repo is private or removed);
+    only dev- branches are tagged on Packagist and total downloads are in single digits, so
+    treat this as low-maintenance/legacy.
+- language: javascript
+  registry: npm
+  name: "@cloudwalkinc/brlc-contracts"
+  url: https://www.npmjs.com/package/@cloudwalkinc/brlc-contracts
+  install: npm install @cloudwalkinc/brlc-contracts
+  version: 1.0.0
+  official: true
+  official_evidence: >-
+    published under the `@cloudwalkinc` npm scope; repository git+https://github.com/cloudwalk/brlc-contracts.git
+  description: >-
+    Solidity smart-contract library for BRLC, CloudWalk's Brazilian-real stablecoin. Not a
+    client library for the Checkout API — blockchain infrastructure, catalogued for
+    completeness.
+unofficial_packages:
+- language: javascript
+  registry: npm
+  name: "@infinitepay/js"
+  url: https://www.npmjs.com/package/@infinitepay/js
+  publisher: lenderson
+  official: false
+  description: Community JavaScript SDK for the InfinitePay Checkout integration.
+- language: php
+  registry: packagist
+  name: odinizfilho/infinitepay-php
+  url: https://packagist.org/packages/odinizfilho/infinitepay-php
+  official: false
+  description: Community server-side PHP SDK for the InfinitePay Integrated Checkout.
+- language: javascript
+  registry: npm
+  name: "@cloudcommerce/app-infinitepay"
+  url: https://www.npmjs.com/package/@cloudcommerce/app-infinitepay
+  publisher: leomp12
+  official: false
+  description: E-Com Plus / Cloud Commerce app that integrates InfinitePay payment links.
+- language: php
+  registry: packagist
+  name: oro/commerce-infinitepay
+  url: https://packagist.org/packages/oro/commerce-infinitepay
+  official: false
+  description: OroCommerce InfinitePay payment integration (maintained by Oro Inc.).
+- language: javascript
+  registry: npm
+  name: "@controleonline/react-native-infinitepay-payment"
+  url: https://www.npmjs.com/package/@controleonline/react-native-infinitepay-payment
+  publisher: luizkim
+  official: false
+  description: >-
+    Community React Native wrapper around the InfiniteTap deeplink handoff documented at
+    https://www.infinitepay.io/checkout-tap
+registries_searched:
+- {registry: npm, query: [cloudwalk, infinitepay, infinitetap], first_party_hits: 1}
+- {registry: pypi, query: [cloudwalk, infinitepay], first_party_hits: 0, note: both project pages returned 404}
+- {registry: rubygems, query: [infinitepay], first_party_hits: 2}
+- {registry: packagist, query: [infinitepay, cloudwalk], first_party_hits: 1}
+- {registry: crates.io, query: [cloudwalk, infinitepay], first_party_hits: 0}
+- {registry: maven-central, query: [cloudwalk, infinitepay], first_party_hits: 0}
+- {registry: nuget, query: [cloudwalk, infinitepay], first_party_hits: 0}
+- {registry: pkg.go.dev, query: [cloudwalk, infinitepay], first_party_hits: 0}

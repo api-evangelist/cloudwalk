@@ -1,0 +1,142 @@
+generated: '2026-08-01'
+method: searched
+source: >-
+  https://www.infinitepay.io/checkout-documentacao and
+  https://www.infinitepay.io/checkout-tap — CloudWalk's two published integration references
+  — plus live probes of api.checkout.infinitepay.io on 2026-08-01.
+description: >-
+  The cross-cutting request/response semantics of CloudWalk's public InfinitePay integration
+  surfaces. Two very different contracts sit side by side: a small JSON-over-HTTPS checkout
+  API, and a mobile deeplink handoff for Tap to Pay. Neither is versioned, neither is
+  key-authenticated, and neither documents idempotency, pagination or rate limiting — this
+  file records that plainly rather than implying conventions the provider has not published.
+base_urls:
+  checkout_api: https://api.checkout.infinitepay.io
+  checkout_api_legacy: https://api.infinitepay.io/invoices/public/checkout
+  hosted_checkout: https://checkout.infinitepay.io
+  tap_deeplink: infinitepaydash://infinitetap-app
+api_style: >-
+  REST-ish JSON over HTTPS. Both operations are POST, including the read-only
+  payment_check. There are no path or query parameters and no resource GETs.
+
+authentication:
+  scheme: >-
+    None in the HTTP sense. The merchant is identified by its InfiniteTag `handle` carried in
+    the JSON request body. There is no Authorization header, no API key, no token and no
+    signature in the published contract.
+  key_types: []
+  docs: https://www.infinitepay.io/checkout-documentacao
+  detail: authentication/cloudwalk-authentication.yml
+  onboarding: >-
+    The InfiniteTap FAQ states explicitly that no API key needs to be generated to integrate.
+    Partner-level integration questions go to parcerias@cloudwalk.io.
+  caveat: >-
+    An InfiniteTag is a public merchant handle, so possession of it is not a secret.
+    Integrators must treat link creation as an unauthenticated write and confirm payment via
+    the webhook or payment_check rather than trusting the browser redirect.
+
+idempotency:
+  supported: false
+  mechanism: null
+  detail: >-
+    No Idempotency-Key header, no idempotent replay semantics, and no documented behaviour
+    for repeating POST /links with identical parameters. `order_nsu` is a merchant-supplied
+    CORRELATION identifier for reconciling a link with an order — the reference does not
+    state that reusing it deduplicates or replays a prior response, so it must not be treated
+    as an idempotency key. Recorded as unsupported; no Idempotency pointer is wired in
+    apis.yml.
+  webhook_side: >-
+    Webhook delivery is retried on a 400 response, so receivers should de-duplicate on
+    `transaction_nsu`.
+
+pagination:
+  supported: false
+  detail: Neither operation returns a collection; there is nothing to paginate.
+
+versioning:
+  scheme: none
+  detail: >-
+    The checkout API carries no version segment, no version header and no dated version. The
+    only versioned CloudWalk path observed is /v2/cards/tokenize on
+    authorizer.infinitepay.io, which has no live public documentation.
+  host_migration: >-
+    The same two operations answer on both api.checkout.infinitepay.io (the host named in the
+    current reference) and the older path-based api.infinitepay.io/invoices/public/checkout.
+    Both were confirmed live on 2026-08-01. Host migration, not API versioning, is how this
+    surface has evolved.
+
+money_and_units:
+  currency: BRL
+  amount_representation: integer cents
+  example: 'R$ 10,00 is sent as 1000'
+  minimum_transaction: >-
+    InfiniteTap: minimum amount 100 (R$ 1,00); every installment must itself be at least
+    R$ 1,00; maximum 12 installments.
+  capture_methods: [credit_card, pix]
+  installments: up to 12 on credit card
+
+error_envelope:
+  format: proprietary
+  rfc9457: false
+  shape:
+    success: boolean (false on error)
+    message: human-readable message on application-level errors
+    error: alternate key returned by the routing layer for unknown paths
+  observed:
+  - {status: 400, body: '{"success":false,"message":"param is missing or the value is empty or invalid: handle"}'}
+  - {status: 404, body: '{"success":false,"message":"Not found"}'}
+  - {status: 404, body: '{"success":false,"error":"Not Found"}'}
+  detail: errors/cloudwalk-problem-types.yml
+  caveat: >-
+    No error code taxonomy, no decline-code reference and no error documentation are
+    published. The shapes above were observed live, not read from documentation.
+
+rate_limits:
+  published: false
+  headers: none observed
+  detail: >-
+    CloudWalk publishes no rate limits for the checkout API and returned no RateLimit /
+    X-RateLimit headers on the probes performed on 2026-08-01.
+
+request_tracing:
+  request_id_header: none published
+  correlation: >-
+    Merchant-side correlation is via `order_nsu` (supplied on the link) and
+    `transaction_nsu` (returned by InfinitePay). Support requests for a specific sale are
+    expected to quote these plus, for InfiniteTap, `nsu` and `aut`.
+
+metadata_and_expansion:
+  metadata: not supported
+  field_expansion: not supported
+  sparse_fields: not supported
+
+deeplink_contract:
+  description: >-
+    The InfiniteTap (Tap to Pay) integration is not an HTTP API. A third-party POS app opens
+    the InfinitePay app via a URI-scheme deeplink and receives the result on its own return
+    deeplink. Captured here because it is a real, published machine contract with a stable
+    parameter set.
+  source: https://www.infinitepay.io/checkout-tap
+  invoke: infinitepaydash://infinitetap-app
+  requirements: 'Android 11+ with NFC; on iOS, Apple Tap to Pay terms must be accepted on first use.'
+  request_parameters:
+  - {name: amount, required: true, type: integer-as-string, description: 'Amount in cents; minimum 100 (R$ 1,00).'}
+  - {name: payment_method, required: true, type: string, description: 'credit or debit'}
+  - {name: installments, required: false, type: integer-as-string, description: 'Credit only; maximum 12; each installment must be >= R$ 1,00.'}
+  - {name: order_id, required: true, type: string, description: Merchant order identifier used to link the transaction to your order.}
+  - {name: result_url, required: true, type: string, description: The return deeplink InfinitePay calls when the transaction finishes.}
+  - {name: app_client_referrer, required: true, type: string, description: Your app's referrer string; must be identical on every call.}
+  - {name: handle, required: false, type: string, description: InfiniteTag, to assert the app is logged into the expected account.}
+  - {name: doc_number, required: false, type: string, description: User document number without punctuation, to assert the expected account.}
+  - {name: af_force_deeplink, required: false, type: string, description: 'Set "true" on iOS.'}
+  success_parameters: [order_id, nsu, aut, card_brand, user_id, access_id, handle, merchant_document]
+  error_parameters: [order_id, nsu, aut, card_brand, user_id, access_id, handle, merchant_document, warning]
+  example_url: >-
+    infinitepaydash://infinitetap-app?amount=100&payment_method=credit&installments=1&order_id=3262&result_url=mypocapp%3A%2F%2Fexample%2Ftap_result&app_client_referrer=POCApp&handle=merchant_dev_4&doc_number=27346981000144&af_force_deeplink=true
+
+cross_links:
+  errors: errors/cloudwalk-problem-types.yml
+  lifecycle: lifecycle/cloudwalk-lifecycle.yml
+  authentication: authentication/cloudwalk-authentication.yml
+  webhooks: asyncapi/cloudwalk-infinitepay-webhooks.yml
+  data_model: data-model/cloudwalk-data-model.yml

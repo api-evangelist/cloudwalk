@@ -1,23 +1,145 @@
 aid: cloudwalk
 name: CloudWalk
-description: 'CloudWalk is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  CloudWalk, Inc. is a Sunnyvale- and São Paulo-based payments and financial-infrastructure
+  company that builds an AI-native transaction layer for small businesses. It operates three
+  consumer-facing brands: InfinitePay, its Brazilian acquirer and digital-banking platform
+  (card machines, Tap to Pay, hosted checkout, payment links, Pix, PJ accounts, credit and
+  CDB); JIM, a phone-as-POS operating system for self-employed workers in the United States;
+  and Pierre, a personal-finance intelligence product built on Brazilian Open Finance. Its
+  public developer surface is deliberately small and integration-shaped rather than
+  platform-shaped: an Integrated Checkout REST API on api.checkout.infinitepay.io that
+  creates hosted payment links and checks their status, an approved-payment webhook, and an
+  InfiniteTap deeplink contract that hands a Tap-to-Pay transaction from a third-party POS
+  app to the InfinitePay mobile app and back. CloudWalk publishes no OpenAPI, no
+  machine-readable discovery documents and no MCP or agent surface. The legal entity behind
+  InfinitePay is CLOUDWALK INSTITUIÇÃO DE PAGAMENTO E SERVIÇOS LTDA (CNPJ 18.189.547/0001-42),
+  a Brazilian payment institution supervised by the Banco Central do Brasil.
 url: https://raw.githubusercontent.com/api-evangelist/cloudwalk/refs/heads/main/apis.yml
+image: https://cdn.prod.website-files.com/6654b3697a9d140e0ca14dcc/6a0bb9e1bb37dcd08e538cc1_Cover-Profile%2044.webp
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-01'
 modified: '2026-08-01'
 tags:
 - Company
-apis: []
+- Payments
+- Financial Services
+- Fintech
+- Checkout
+- Point of Sale
+- Acquiring
+- Pix
+- Brazil
+- Banking
+- Webhooks
+- Tap to Pay
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- name: InfinitePay Checkout API
+  description: >-
+    The InfinitePay Integrated Checkout ("Checkout Integrado") API. Two public JSON
+    operations — create a hosted checkout payment link for a basket of items, and check the
+    payment status of a link — plus an approved-payment webhook. The merchant is identified
+    by its InfiniteTag handle rather than an API key; amounts are integers in Brazilian
+    cents; capture methods are credit_card (up to 12 installments) and pix.
+  humanURL: https://www.infinitepay.io/checkout-documentacao
+  baseURL: https://api.checkout.infinitepay.io
+  tags:
+  - Payments
+  - Checkout
+  - Payment Links
+  - Pix
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudwalk-infinitepay-checkout-openapi.yml
+  - type: Overlay
+    url: overlays/cloudwalk-infinitepay-checkout-overlay.yaml
+  - type: Documentation
+    url: https://www.infinitepay.io/checkout-documentacao
+  - type: APIReference
+    url: https://www.infinitepay.io/checkout-documentacao
+  - type: Webhooks
+    url: asyncapi/cloudwalk-infinitepay-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/cloudwalk-problem-types.yml
+  - type: DataModel
+    url: data-model/cloudwalk-data-model.yml
 common:
+- type: AgenticAccess
+  url: agentic-access/cloudwalk-agentic-access.yml
 - type: Website
-  url: https://forgeglobal.com/cloudwalk_stock/
+  url: https://www.cloudwalk.io/
+- type: DeveloperPortal
+  url: https://www.infinitepay.io/desenvolvedores
+- type: Documentation
+  url: https://www.infinitepay.io/checkout-documentacao
+- type: APIReference
+  url: https://www.infinitepay.io/checkout-documentacao
+- type: GettingStarted
+  url: https://www.infinitepay.io/checkout
+- type: Support
+  url: https://ajuda.infinitepay.io/pt-BR/
+- type: Blog
+  url: https://www.infinitepay.io/blog
+- type: GitHubOrganization
+  url: https://github.com/cloudwalk
+- type: Pricing
+  url: https://www.infinitepay.io/taxas
+- type: SignUp
+  url: https://app.infinitepay.io
+- type: Login
+  url: https://app.infinitepay.io
+- type: TermsOfService
+  url: https://www.infinitepay.io/legal/termos-de-uso
+- type: PrivacyPolicy
+  url: https://www.infinitepay.io/legal/aviso-de-privacidade
+- type: StatusPage
+  url: https://status.infinitepay.io/
+- type: Security
+  url: https://www.infinitepay.io/security
+- type: Compliance
+  url: https://www.infinitepay.io/legal/politica-de-seguranca-cibernetica
+- type: Newsroom
+  url: https://www.cloudwalk.io/newsroom
+- type: Packages
+  url: packages/cloudwalk-packages.yml
+- type: SDKs
+  url: packages/cloudwalk-packages.yml
+- type: WellKnown
+  url: well-known/cloudwalk-well-known.yml
+- type: LLMsTxt
+  url: llms/cloudwalk-llms.txt
+- type: Conformance
+  url: conformance/cloudwalk-conformance.yml
+- type: ErrorCatalog
+  url: errors/cloudwalk-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/cloudwalk-lifecycle.yml
+- type: Authentication
+  url: authentication/cloudwalk-authentication.yml
+- type: DomainSecurity
+  url: security/cloudwalk-domain-security.yml
+- type: VulnerabilityDisclosure
+  url: security/cloudwalk-vulnerability-disclosure.yml
+- type: Conventions
+  url: conventions/cloudwalk-conventions.yml
+- type: Components
+  url: components/cloudwalk-components.yml
+- type: DataModel
+  url: data-model/cloudwalk-data-model.yml
+- type: Webhooks
+  url: asyncapi/cloudwalk-infinitepay-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-01'
+  status: enriched
+  artifacts_added: 21
+  pass: local-v1

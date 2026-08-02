@@ -1,0 +1,53 @@
+generated: '2026-08-01'
+method: probed
+source: live GET probes of the /.well-known/ discovery surface on every CloudWalk host
+description: >-
+  CloudWalk publishes no /.well-known/ discovery documents on any of its hosts. Every
+  candidate path below was fetched anonymously on 2026-08-01 and every one returned 404 (or
+  403 at the edge). No security.txt, no OIDC/OAuth metadata, no api-catalog, no ai-plugin,
+  and no A2A agent card at either the canonical /.well-known/agent-card.json or the legacy
+  /.well-known/agent.json path. Recorded as a verified absence, not an untested assumption.
+hosts_probed:
+- https://www.cloudwalk.io
+- https://cloudwalk.io
+- https://www.infinitepay.io
+- https://infinitepay.io
+- https://api.infinitepay.io
+- https://api.checkout.infinitepay.io
+- https://authorizer.infinitepay.io
+- https://checkout.infinitepay.io
+- https://www.jim.com
+- https://jim.com
+- https://ajuda.infinitepay.io
+documents:
+- path: /.well-known/security.txt
+  status: 404
+  note: RFC 9116 — not published on any host.
+- path: /.well-known/openid-configuration
+  status: 404
+  note: OIDC discovery — not published on any host.
+- path: /.well-known/oauth-authorization-server
+  status: 404
+  note: RFC 8414 — not published on any host.
+- path: /.well-known/oauth-protected-resource
+  status: 404
+  note: RFC 9728 — not published (probed on api.checkout.infinitepay.io).
+- path: /.well-known/api-catalog
+  status: 404
+  note: RFC 9727 — not published on any host.
+- path: /.well-known/ai-plugin.json
+  status: 404
+  note: not published on any host.
+- path: /.well-known/agent-card.json
+  status: 404
+  note: A2A 1.0.0 canonical path — no agent card on any host.
+- path: /.well-known/agent.json
+  status: 404
+  note: A2A pre-0.3 legacy path — no agent card on any host.
+- path: /llms.txt
+  status: 404
+  note: not published on any host, including the documentation host.
+x-evidence:
+  fetched: '2026-08-01'
+  method: 'curl -L, anonymous, browser user-agent, follow redirects'
+  result: no 200 response with a discovery document on any host/path combination

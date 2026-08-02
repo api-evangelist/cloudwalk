@@ -1,0 +1,26 @@
+generated: '2026-08-01'
+method: generated
+source: >-
+  Packaged Agent Skills generated from
+  openapi/cloudwalk-infinitepay-checkout-openapi.yml. Every step is grounded in an
+  operationId that exists verbatim in that spec; cross-cutting rules cite
+  ../conventions/cloudwalk-conventions.yml, ../errors/cloudwalk-problem-types.yml and
+  ../authentication/cloudwalk-authentication.yml. CloudWalk publishes no AGENTS.md or skill
+  files of its own — the developer pages, the GitHub organization and the docs hosts were
+  searched on 2026-08-01 with no result.
+skills:
+- file: cloudwalk-collect-payment-with-checkout-link.md
+  name: Collect a payment with an InfinitePay checkout link
+  api: openapi/cloudwalk-infinitepay-checkout-openapi.yml
+  operations: [createCheckoutLink, checkPaymentStatus]
+- file: cloudwalk-reconcile-payment-webhook.md
+  name: Reconcile an InfinitePay payment webhook
+  api: openapi/cloudwalk-infinitepay-checkout-openapi.yml
+  operations: [onPaymentApproved, checkPaymentStatus]
+- file: cloudwalk-take-tap-to-pay-payment.md
+  name: Take an in-person Tap to Pay payment with InfiniteTap
+  api: conventions/cloudwalk-conventions.yml
+  operations: []
+  note: >-
+    Grounded in the published InfiniteTap deeplink contract rather than an OpenAPI
+    operationId, because that surface is a URI-scheme handoff, not an HTTP API.

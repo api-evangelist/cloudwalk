@@ -1,0 +1,107 @@
+generated: '2026-08-01'
+method: derived
+source: >-
+  Derived from openapi/cloudwalk-infinitepay-checkout-openapi.yml, live probes on 2026-08-01,
+  and CloudWalk's published legal/compliance documents at https://www.infinitepay.io/legal/.
+description: >-
+  Which cross-cutting API and industry standards CloudWalk's public InfinitePay surface
+  actually conforms to. The technical answer is: very few — the checkout API is a bespoke
+  two-endpoint JSON contract with no auth standard, no error standard and no discovery
+  standard. The regulatory answer is different: CloudWalk operates a Banco Central do
+  Brasil-supervised payment institution and publishes the full BACEN-mandated policy set
+  (cyber security, AML/PLD, liquidity risk management, Pillar 3 market discipline,
+  socio-environmental risk), which is a real, published compliance program.
+standards:
+- id: openapi
+  conforms: false
+  evidence: >-
+    CloudWalk publishes no OpenAPI/Swagger document. /openapi.json, /openapi.yaml,
+    /swagger.json, /v1/openapi.json, /api-docs, /docs, /redoc were probed on every API and
+    docs host and all missed (/api-docs returned 401 — an access-controlled internal
+    surface). The spec in openapi/ was transcribed by API Evangelist from the provider's
+    published reference.
+- id: asyncapi
+  conforms: false
+  evidence: No AsyncAPI document; /asyncapi.yaml and /asyncapi.json 404 on all hosts.
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 securityScheme; no /.well-known/oauth-authorization-server.
+- id: oidc
+  conforms: false
+  evidence: No /.well-known/openid-configuration on any host.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: 'Errors use a proprietary {success,message} envelope; no application/problem+json.'
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt 404 on all hosts, despite a published disclosure policy.
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: /.well-known/api-catalog 404 on all hosts.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No deprecation policy and no Sunset/Deprecation header support.
+- id: a2a-agent-card
+  conforms: false
+  evidence: /.well-known/agent-card.json and /.well-known/agent.json 404 on all hosts.
+- id: mcp
+  conforms: false
+  evidence: No hosted or published MCP server found in registries, docs or the GitHub org.
+- id: webhooks
+  conforms: true
+  evidence: >-
+    A documented HTTPS POST webhook fires on payment approval, with a documented 200/400
+    acknowledgement contract. Captured in asyncapi/cloudwalk-infinitepay-webhooks.yml. Not a
+    standard as such, but the event surface exists.
+- id: pix
+  conforms: true
+  evidence: >-
+    Pix is a supported capture_method on the checkout API and Pix is a Banco Central do
+    Brasil instant-payment scheme; InfinitePay is a Pix participant through CLOUDWALK
+    INSTITUIÇÃO DE PAGAMENTO E SERVIÇOS LTDA.
+- id: open-finance-brasil
+  conforms: partial
+  evidence: >-
+    CloudWalk's Pierre product is described on cloudwalk.io as built on Open Finance
+    integration, and InfinitePay appears in third-party Open Finance provider directories.
+    CloudWalk publishes no Open Finance Brasil developer portal, no FAPI-conformant
+    authorization server and no directory-registered API surface that could be verified on
+    2026-08-01, so this is recorded as partial/unverified rather than conformant.
+- id: fapi
+  conforms: false
+  evidence: No FAPI security profile observed; the public API has no authorization server at all.
+- id: pci-dss
+  conforms: unverified
+  evidence: >-
+    Card acquiring necessarily implies PCI DSS obligations, and the hosted checkout keeps card
+    data off merchant infrastructure, but CloudWalk publishes no PCI DSS attestation, AOC or
+    compliance statement on any public page checked. Not asserted.
+- id: iso-27001
+  conforms: unverified
+  evidence: No ISO 27001 certification claim found on any public CloudWalk page.
+- id: soc2
+  conforms: unverified
+  evidence: No SOC 2 report or claim found on any public CloudWalk page.
+regulatory_compliance:
+  regime: Brazil — Banco Central do Brasil (BACEN) / Conselho Monetário Nacional (CMN)
+  entities:
+  - {name: CLOUDWALK INSTITUIÇÃO DE PAGAMENTO E SERVIÇOS LTDA, cnpj: 18.189.547/0001-42, role: payment institution operating InfinitePay}
+  - {name: CLOUDWALK FINANCEIRA S.A. CREDITO, FINANCIAMENTO E INVESTIMENTO, cnpj: 05.503.849/0001-00, role: credit operations, with the payment institution acting as banking correspondent under CMN Resolution 4.935/2021}
+  published_policies:
+  - {name: Política de Segurança Cibernética, url: 'https://www.infinitepay.io/legal/politica-de-seguranca-cibernetica', note: BACEN-mandated cyber security policy}
+  - {name: 'Política de Combate a Atos Ilícitos e Prevenção à Lavagem de Dinheiro (PLD)', url: 'https://www.infinitepay.io/legal/politica-pld', note: AML/CFT}
+  - {name: Estrutura de Gestão do Risco de Liquidez, url: 'https://www.infinitepay.io/legal/gestao-do-risco-de-liquidez'}
+  - {name: 'Disciplina de Mercado — Pilar 3', url: 'https://www.infinitepay.io/legal/disciplina-de-mercado', note: Basel Pillar 3 disclosure}
+  - {name: Política de Responsabilidade Social, Ambiental e Climática, url: 'https://www.infinitepay.io/legal/politica-responsabilidade-social-ambiental-climatica'}
+  - {name: Aviso de Privacidade, url: 'https://www.infinitepay.io/legal/aviso-de-privacidade', note: LGPD privacy notice}
+  note: >-
+    These are the basis for the `Compliance` pointer in apis.yml: a real, published,
+    regulator-mandated compliance program — not security certifications, which CloudWalk does
+    not publish.
+trust_center:
+  published: false
+  hosts_checked: [trust.cloudwalk.io, security.cloudwalk.io, 'cloudwalk.io/trust', 'cloudwalk.io/security', 'cloudwalk.io/compliance', 'infinitepay.io/security']
+  note: >-
+    No trust center with named certifications exists. infinitepay.io/security is the
+    vulnerability-disclosure page, captured in security/cloudwalk-vulnerability-disclosure.yml,
+    not a trust center — so no security/cloudwalk-trust-center.yml artifact was written.

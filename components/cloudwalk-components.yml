@@ -1,0 +1,78 @@
+generated: '2026-08-01'
+method: searched
+source: >-
+  https://www.infinitepay.io/checkout, https://www.infinitepay.io/checkout-documentacao,
+  https://www.infinitepay.io/checkout-tap and https://www.infinitepay.io/desenvolvedores
+description: >-
+  CloudWalk ships no embeddable client-side element library — there is no Stripe-Elements
+  equivalent, no web components, no JS loader and no iframe SDK. What it does ship, and what
+  its integration model is entirely built around, are hosted and app-hosted surfaces: an
+  InfinitePay-hosted checkout page the buyer is redirected to, and the InfinitePay mobile app
+  itself acting as the card reader for Tap to Pay. Both are captured here because they are
+  the real "component" layer an integrator wires into — the merchant never renders payment UI.
+libraries: []
+families:
+  hosted_prebuilt:
+    description: >-
+      InfinitePay-hosted payment surfaces. Card data never reaches merchant infrastructure;
+      the merchant's only job is to create a link and handle the completion signal.
+    components:
+    - name: Hosted Checkout page
+      host: https://checkout.infinitepay.io
+      url_form: https://checkout.infinitepay.io/<handle>/<code>
+      created_by: openapi/cloudwalk-infinitepay-checkout-openapi.yml#createCheckoutLink
+      description: >-
+        The prebuilt payment page a buyer is redirected to. Renders the basket, collects
+        payment by credit card (up to 12 installments) or Pix, recognises Apple Pay and
+        Google Pay wallets, and optionally pre-fills customer and delivery-address fields
+        supplied on the link.
+      embeddable: false
+      note: >-
+        Redirect-only. There is no embedded/iframe mode and no published theming or branding
+        API. GET on checkout.infinitepay.io returned 403 at the edge when probed anonymously
+        on 2026-08-01 — the page is reachable only via a valid generated link.
+    - name: Payment Link
+      description: >-
+        The no-code sibling of the same surface, created in the InfinitePay app rather than
+        over the API. Same hosted checkout page.
+      docs: https://www.infinitepay.io/checkout
+      embeddable: false
+  app_hosted:
+    description: >-
+      Surfaces rendered by the InfinitePay mobile app on behalf of a third-party application,
+      entered and exited over deeplinks.
+    components:
+    - name: InfiniteTap payment sheet
+      invoke: infinitepaydash://infinitetap-app
+      description: >-
+        The InfinitePay app's Tap to Pay screen. A third-party POS app hands off amount,
+        payment method, installments and an order id; the app takes the contactless card
+        payment and calls back the supplied result_url deeplink with the transaction
+        outcome. Requires Android 11+ with NFC, or iOS with Apple Tap to Pay terms accepted.
+      contract: conventions/cloudwalk-conventions.yml#deeplink_contract
+      docs: https://www.infinitepay.io/checkout-tap
+      embeddable: false
+  merchant_no_code:
+    description: >-
+      Merchant-facing storefront builders offered as products rather than as developer
+      components. Listed for completeness — none of them has a public API or embed contract.
+    components:
+    - {name: Loja Online, description: Hosted product catalogue storefront.}
+    - {name: Criador de Site, description: No-code website builder with payment built in.}
+    - {name: Link na Bio, description: Hosted link-in-bio page with payments.}
+    - {name: 'PDV', description: In-app point-of-sale with stock management.}
+ecommerce_plugins:
+  description: >-
+    Where most integrators actually meet InfinitePay: prebuilt payment methods for commerce
+    platforms. Catalogued in detail in packages/cloudwalk-packages.yml.
+  first_party:
+  - {platform: WooCommerce, package: 'cloudwalk/infinitepay-woocommerce-plugin', registry: packagist}
+  third_party:
+  - {platform: OroCommerce, package: 'oro/commerce-infinitepay', registry: packagist}
+  - {platform: 'E-Com Plus / Cloud Commerce', package: '@cloudcommerce/app-infinitepay', registry: npm}
+gaps:
+- No embeddable element/web-component library.
+- No embedded (non-redirect) checkout mode.
+- No published theming, branding or localisation API for the hosted page.
+- No client-side tokenization library for merchants building their own card form (the
+  /v2/cards/tokenize endpoint on authorizer.infinitepay.io exists but has no live public docs).

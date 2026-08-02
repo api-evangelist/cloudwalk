@@ -1,0 +1,14 @@
+{
+  "repo": "cloudwalk",
+  "feeds": [
+    {
+      "source": "https://ajuda.infinitepay.io/pt-BR/",
+      "feed_url": "https://ajuda.infinitepay.io/pt-BR/feed.xml",
+      "title": "",
+      "saved": 1,
+      "method": "discovered"
+    }
+  ],
+  "post_count": 1,
+  "fetched": "2026-08-01T15:49:00Z"
+}

@@ -1,0 +1,61 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the InfinitePay Checkout API
+  version: 1.0.0
+extends: openapi/cloudwalk-infinitepay-checkout-openapi.yml
+x-generated: '2026-08-01'
+x-method: generated
+x-source: >-
+  Records the enhancements API Evangelist applied on top of CloudWalk's published reference at
+  https://www.infinitepay.io/checkout-documentacao. CloudWalk publishes no OpenAPI of its own,
+  so the base document is itself a transcription; this overlay isolates the parts that are
+  ours (ratings, provenance markers, agent-access classification, cross-links to the sibling
+  artifacts) from the parts that are CloudWalk's (paths, fields, examples).
+actions:
+- target: $.info
+  update:
+    x-apievangelist-rating: 2
+    x-apievangelist-notes: >-
+      Two operations, no published machine-readable contract, no authentication, no
+      versioning, no error reference, no rate-limit documentation, no sandbox. Real strengths
+      are a documented webhook with an explicit acknowledgement/retry contract, a live public
+      status page, and a named responsible-disclosure program.
+    x-provenance: >-
+      Transcribed by API Evangelist from the provider's published reference; not published by
+      CloudWalk.
+    x-artifacts:
+      conventions: conventions/cloudwalk-conventions.yml
+      errors: errors/cloudwalk-problem-types.yml
+      authentication: authentication/cloudwalk-authentication.yml
+      webhooks: asyncapi/cloudwalk-infinitepay-webhooks.yml
+      lifecycle: lifecycle/cloudwalk-lifecycle.yml
+      data_model: data-model/cloudwalk-data-model.yml
+      agentic_access: agentic-access/cloudwalk-agentic-access.yml
+      skills: skills/_index.yml
+- target: $.paths['/links'].post
+  update:
+    x-agentic-access:
+      action-class: acting
+      consequence: physical
+      human-in-the-loop: recommended
+      audit: required
+      note: >-
+        Creates a money-collecting artifact against a merchant handle over an unauthenticated
+        endpoint. Bound amount and confirm before calling.
+- target: $.paths['/payment_check'].post
+  update:
+    x-agentic-access:
+      action-class: connected
+      consequence: read
+      note: >-
+        Read-only despite being a POST. Requires handle + order_nsu + transaction_nsu + slug
+        together, which acts as a weak capability check.
+- target: $.components.schemas.CreateCheckoutLinkRequest
+  update:
+    x-apievangelist-warning: >-
+      The provider's reference spells the items array both `items` and `itens` on the same
+      page. Recorded as published; not silently resolved.
+- target: $.components.schemas.Error
+  update:
+    x-apievangelist-note: >-
+      Observed live, not documented. CloudWalk publishes no error reference for this API.
