@@ -72,6 +72,8 @@ apis:
   - type: DataModel
     url: data-model/cloudwalk-data-model.yml
 common:
+- type: MCPServer
+  url: mcp/cloudwalk-mcp.yml
 - type: AgenticAccess
   url: agentic-access/cloudwalk-agentic-access.yml
 - type: Website
