@@ -1,0 +1,311 @@
+{
+  "item": [
+    {
+      "id": "cc4ec6e7-12f8-439c-8929-0d670b08bc6a",
+      "name": "Checkout Links",
+      "description": {
+        "content": "Create InfinitePay-hosted checkout payment links.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "37aa3d23-b0fe-4ed9-9e61-717f9e71c5ad",
+          "name": "Create a checkout payment link",
+          "request": {
+            "name": "Create a checkout payment link",
+            "description": {
+              "content": "Creates an InfinitePay-hosted checkout link for a basket of items. The response carries the URL the buyer is sent to in order to pay by credit card (up to 12 installments) or Pix.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "links"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"handle\": \"<string>\",\n  \"items\": [\n    {\n      \"quantity\": \"<integer>\",\n      \"price\": \"<integer>\",\n      \"description\": \"<string>\"\n    }\n  ],\n  \"order_nsu\": \"<string>\",\n  \"redirect_url\": \"<uri>\",\n  \"webhook_url\": \"<uri>\",\n  \"customer\": {\n    \"name\": \"<string>\",\n    \"email\": \"<email>\",\n    \"phone_number\": \"<string>\"\n  },\n  \"address\": {\n    \"cep\": \"<string>\",\n    \"street\": \"<string>\",\n    \"neighborhood\": \"<string>\",\n    \"number\": \"<string>\",\n    \"complement\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f5ffe1fb-4eb3-4855-a619-3779b9aaf224",
+              "name": "Checkout link created.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "links"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"handle\": \"colakids\",\n  \"items\": [\n    {\n      \"quantity\": 1,\n      \"price\": 1000,\n      \"description\": \"Produto de Exemplo\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"checkout_url\": \"https://checkout.infinitepay.io/colakids/1RxANX7tdF\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e42b6292-759a-43c4-922e-922b4701e0e6",
+              "name": "A required parameter is missing or invalid. Observed live 2026-08-01 for an empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "links"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"handle\": \"colakids\",\n  \"items\": [\n    {\n      \"quantity\": 1,\n      \"price\": 1000,\n      \"description\": \"Produto de Exemplo\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"param is missing or the value is empty or invalid: handle\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "91beee4d-285f-4db1-8ccd-e877518bb8c2",
+      "name": "Payments",
+      "description": {
+        "content": "Query the payment status of a checkout link.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "200204d8-952d-4a97-85c0-2c942cb8e7c9",
+          "name": "Check the payment status of a checkout link",
+          "request": {
+            "name": "Check the payment status of a checkout link",
+            "description": {
+              "content": "Returns whether a checkout link has been paid, the amount charged, the number of installments and the capture method. Used as the pull-based alternative to the webhook.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment_check"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"handle\": \"<string>\",\n  \"order_nsu\": \"<string>\",\n  \"transaction_nsu\": \"<string>\",\n  \"slug\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "33b6ab59-45a4-43fb-85d3-c46ef606b284",
+              "name": "Payment status.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_check"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"handle\": \"sua_infinite_tag\",\n  \"order_nsu\": \"123456\",\n  \"transaction_nsu\": \"UUID-que-recebeu\",\n  \"slug\": \"codigo-da-fatura\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"paid\": true,\n  \"amount\": 1500,\n  \"paid_amount\": 1510,\n  \"installments\": 1,\n  \"capture_method\": \"pix\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a131a3c8-9fea-4ebb-a305-7de64dc875f4",
+              "name": "No matching invoice/transaction for the supplied identifiers. Observed live 2026-08-01 for an empty body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment_check"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"handle\": \"sua_infinite_tag\",\n  \"order_nsu\": \"123456\",\n  \"transaction_nsu\": \"UUID-que-recebeu\",\n  \"slug\": \"codigo-da-fatura\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.checkout.infinitepay.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "7fa9183b-e6f8-4f1c-8d6a-701e32678185",
+    "name": "InfinitePay Checkout API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The InfinitePay Integrated Checkout (\"Checkout Integrado\") API, operated by CloudWalk Inc. It has two public operations: create a hosted checkout link for a basket of items, and check the payment status of a previously created link. Payment is completed on the InfinitePay-hosted checkout page (checkout.infinitepay.io); the merchant is identified by its InfiniteTag `handle` rather than by an API key. Amounts are always integers in Brazilian cents (R$ 10,00 = 1000). Supported capture methods are `credit_card` (up to 12 installments) and `pix`.\n\nPROVENANCE: this document was NOT published by CloudWalk. It is a faithful transcription of CloudWalk's own live, public API reference at https://www.infinitepay.io/checkout-documentacao (fetched 2026-08-01), with every path, field name, type and example taken verbatim from that page. Both hosts were probed live on 2026-08-01 to confirm the routes exist (see x-evidence). No operation, field or response has been invented; where the published reference is silent (error catalogue, rate limits, sandbox) this spec is silent too.\n\nContact Support:\n Name: InfinitePay / CloudWalk partner integrations\n Email: parcerias@cloudwalk.io",
+      "type": "text/plain"
+    }
+  }
+}

@@ -2,51 +2,57 @@ generated: '2026-08-01'
 method: derived
 status: candidate
 source: openapi/cloudwalk-infinitepay-checkout-openapi.yml
-description: >-
-  CloudWalk publishes NO MCP server. Searches of the MCP registries, npm
-  (@modelcontextprotocol and CloudWalk/InfinitePay scopes), the CloudWalk GitHub organization
-  and the InfinitePay developer pages all missed, and no /.well-known/oauth-protected-resource
-  or agent card exists on any host. The tools below are a CANDIDATE surface derived
-  mechanically from the two operations in the captured OpenAPI — what an MCP server for the
-  InfinitePay Checkout API would expose if one existed. Because no server exists, NO
-  `MCPServer` pointer is wired in apis.yml: emitting one would credit CloudWalk with an agent
-  surface it does not operate.
+description: 'CloudWalk publishes NO MCP server. Searches of the MCP registries, npm (@modelcontextprotocol
+  and CloudWalk/InfinitePay scopes), the CloudWalk GitHub organization and the InfinitePay developer pages
+  all missed, and no /.well-known/oauth-protected-resource or agent card exists on any host. The tools
+  below are a CANDIDATE surface derived mechanically from the two operations in the captured OpenAPI —
+  what an MCP server for the InfinitePay Checkout API would expose if one existed. Because no server exists,
+  NO `MCPServer` pointer is wired in apis.yml: emitting one would credit CloudWalk with an agent surface
+  it does not operate.'
 server:
   name: infinitepay-checkout
   transport: null
   url: null
   published: false
 search:
-  registries_checked: [modelcontextprotocol/servers, npm, mcp registry listings]
+  registries_checked:
+  - modelcontextprotocol/servers
+  - npm
+  - mcp registry listings
   github_org_checked: https://github.com/cloudwalk
-  docs_checked: [https://www.infinitepay.io/desenvolvedores, https://www.infinitepay.io/checkout-documentacao]
-  wellknown_checked: ['/.well-known/oauth-protected-resource', '/.well-known/oauth-authorization-server', '/.well-known/ai-plugin.json']
+  docs_checked:
+  - https://www.infinitepay.io/desenvolvedores
+  - https://www.infinitepay.io/checkout-documentacao
+  wellknown_checked:
+  - /.well-known/oauth-protected-resource
+  - /.well-known/oauth-authorization-server
+  - /.well-known/ai-plugin.json
   result: no hosted, remote or published MCP server found
 tools:
 - name: create_checkout_link
-  description: >-
-    Create an InfinitePay hosted checkout payment link for a basket of items and return the
+  description: Create an InfinitePay hosted checkout payment link for a basket of items and return the
     URL to send the buyer to.
   source_operation: openapi/cloudwalk-infinitepay-checkout-openapi.yml#createCheckoutLink
   action_class: acting
   consequence: physical
-  note: >-
-    Money-moving. Any real MCP exposure of this tool needs a human-in-the-loop confirmation
-    and a bounded amount, because the underlying API has no authentication at all — see
-    authentication/cloudwalk-authentication.yml.
+  note: Money-moving. Any real MCP exposure of this tool needs a human-in-the-loop confirmation and a
+    bounded amount, because the underlying API has no authentication at all — see authentication/cloudwalk-authentication.yml.
 - name: check_payment_status
-  description: >-
-    Check whether an InfinitePay checkout link has been paid, and with what amount,
-    installments and capture method.
+  description: Check whether an InfinitePay checkout link has been paid, and with what amount, installments
+    and capture method.
   source_operation: openapi/cloudwalk-infinitepay-checkout-openapi.yml#checkPaymentStatus
   action_class: connected
   consequence: read
 notes:
-- >-
-    A tool crosswalk (mcp/cloudwalk-tool-crosswalk.yml) was NOT written: the crosswalk exists
-    to record divergence between a real MCP/GraphQL surface and a REST surface, and here
-    there is only the REST surface. There is nothing to bind.
-- >-
-    CloudWalk markets JIM as "one of the largest agentic deployments in commerce", but JIM is
-    an end-user agent inside its own apps, not an agent-facing API. No externally callable
-    agent interface — MCP, A2A or otherwise — is published.
+- 'A tool crosswalk (mcp/cloudwalk-tool-crosswalk.yml) was NOT written: the crosswalk exists to record
+  divergence between a real MCP/GraphQL surface and a REST surface, and here there is only the REST surface.
+  There is nothing to bind.'
+- CloudWalk markets JIM as "one of the largest agentic deployments in commerce", but JIM is an end-user
+  agent inside its own apps, not an agent-facing API. No externally callable agent interface — MCP, A2A
+  or otherwise — is published.
+deployment:
+  mode: none
+  verified: derived
+  tools: 2
+  checked: '2026-08-12'
+  source: catalog MCP census

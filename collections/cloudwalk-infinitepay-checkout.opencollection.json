@@ -1,0 +1,56 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "InfinitePay Checkout API",
+    "version": "2026-08-01"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Checkout Links",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a checkout payment link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkout.infinitepay.io/links",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an InfinitePay-hosted checkout link for a basket of items. The response carries the URL the buyer is sent to in order to pay by credit card (up to 12 installments) or Pix."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check the payment status of a checkout link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkout.infinitepay.io/payment_check",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns whether a checkout link has been paid, the amount charged, the number of installments and the capture method. Used as the pull-based alternative to the webhook."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
