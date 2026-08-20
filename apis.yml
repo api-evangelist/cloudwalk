@@ -25,6 +25,19 @@ modified: '2026-08-01'
 tags:
 - Company
 - Payments
+- Financial-Services
+- Fintech
+- Checkout
+- Point-of-Sale
+- Acquiring
+- Pix
+- Brazil
+- Banking
+- Webhook
+- Tap to Pay
+tags_raw:
+- Company
+- Payments
 - Financial Services
 - Fintech
 - Checkout
@@ -51,6 +64,12 @@ apis:
   humanURL: https://www.infinitepay.io/checkout-documentacao
   baseURL: https://api.checkout.infinitepay.io
   tags:
+  - Payments
+  - Checkout
+  - Payment Links
+  - Pix
+  - Webhook
+  tags_raw:
   - Payments
   - Checkout
   - Payment Links
