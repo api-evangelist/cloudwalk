@@ -54,32 +54,57 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 apis:
-- name: InfinitePay Checkout API
+- aid: cloudwalk:cloudwalk-checkout-links-api
+  name: CloudWalk Checkout Links API
+  description: Create InfinitePay-hosted checkout payment links.
+  humanURL: https://www.infinitepay.io/checkout-documentacao
+  baseURL: https://api.checkout.infinitepay.io
+  tags:
+  - Checkout Links
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudwalk-checkout-links-api-openapi.yml
+  - type: Documentation
+    url: https://www.infinitepay.io/checkout-documentacao
+  - type: APIReference
+    url: https://www.infinitepay.io/checkout-documentacao
+  - type: Webhooks
+    url: asyncapi/cloudwalk-infinitepay-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/cloudwalk-problem-types.yml
+  - type: DataModel
+    url: data-model/cloudwalk-data-model.yml
+- aid: cloudwalk:cloudwalk-infinitepay-checkout-api-api
+  name: CloudWalk InfinitePay Checkout API
   description: >-
-    The InfinitePay Integrated Checkout ("Checkout Integrado") API. Two public JSON
-    operations — create a hosted checkout payment link for a basket of items, and check the
-    payment status of a link — plus an approved-payment webhook. The merchant is identified
-    by its InfiniteTag handle rather than an API key; amounts are integers in Brazilian
-    cents; capture methods are credit_card (up to 12 installments) and pix.
+    The InfinitePay Checkout API API from CloudWalk — 0 operation(s) for infinitepay checkout api.
+  humanURL: https://www.infinitepay.io/checkout-documentacao
+  baseURL: https://api.checkout.infinitepay.io
+  tags:
+  - InfinitePay Checkout API
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudwalk-infinitepay-checkout-api-api-openapi.yml
+  - type: Documentation
+    url: https://www.infinitepay.io/checkout-documentacao
+  - type: APIReference
+    url: https://www.infinitepay.io/checkout-documentacao
+  - type: Webhooks
+    url: asyncapi/cloudwalk-infinitepay-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/cloudwalk-problem-types.yml
+  - type: DataModel
+    url: data-model/cloudwalk-data-model.yml
+- aid: cloudwalk:cloudwalk-payments-api
+  name: CloudWalk Payments API
+  description: Query the payment status of a checkout link.
   humanURL: https://www.infinitepay.io/checkout-documentacao
   baseURL: https://api.checkout.infinitepay.io
   tags:
   - Payments
-  - Checkout
-  - Payment Links
-  - Pix
-  - Webhook
-  tags_raw:
-  - Payments
-  - Checkout
-  - Payment Links
-  - Pix
-  - Webhooks
   properties:
   - type: OpenAPI
-    url: openapi/cloudwalk-infinitepay-checkout-openapi.yml
-  - type: Overlay
-    url: overlays/cloudwalk-infinitepay-checkout-overlay.yaml
+    url: openapi/cloudwalk-payments-api-openapi.yml
   - type: Documentation
     url: https://www.infinitepay.io/checkout-documentacao
   - type: APIReference
@@ -91,6 +116,8 @@ apis:
   - type: DataModel
     url: data-model/cloudwalk-data-model.yml
 common:
+- type: Overlay
+  url: overlays/cloudwalk-infinitepay-checkout-overlay.yaml
 - type: MCPServer
   url: mcp/cloudwalk-mcp.yml
 - type: AgenticAccess
