@@ -128,6 +128,9 @@ apis:
   - type: DataModel
     url: data-model/cloudwalk-data-model.yml
 common:
+- type: CapabilityMap
+  url: capabilities/cloudwalk-capability-edges.yml
+  name: CloudWalk Business Capability Map
 - type: Overlay
   url: overlays/cloudwalk-infinitepay-checkout-overlay.yaml
 - type: MCPServer

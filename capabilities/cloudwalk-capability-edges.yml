@@ -1,0 +1,36 @@
+slug: cloudwalk
+provider: CloudWalk
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Banking & Capital Markets
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Checkout Links
+  spec_file: cloudwalk-checkout-links-api-openapi.yml
+  capability_id: BC-1340.10
+  capability_id_l1: BC-1340
+  capability_name: Payment Initiation Management
+  confidence: 0.75
+  evidence: POST /links createCheckoutLink — "Create a checkout payment link"; "Supported capture methods
+    are `credit_card` (up to 12 installments) and `pix`"
+  reason: Creating a hosted checkout link for a basket captures and authorises a payment instruction from
+    a payer, i.e. payment initiation/acceptance on the acquiring side. Ambiguity is only about which payments
+    sub-capability, not whether it is payments.
+- tag: Payments
+  spec_file: cloudwalk-payments-api-openapi.yml
+  capability_id: BC-1340
+  capability_id_l1: BC-1340
+  capability_name: Payments & Card Management
+  confidence: 0.7
+  evidence: POST /payment_check checkPaymentStatus — "Check the payment status of a checkout link"
+  reason: Single operation returns the processing status of a card/Pix payment made through the hosted
+    checkout — clearly within payments and card management, but a lone status query does not pin down
+    initiation vs processing, so only the L1 is asserted.
