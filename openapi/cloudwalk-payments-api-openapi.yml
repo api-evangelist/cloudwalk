@@ -1,0 +1,168 @@
+openapi: 3.2.0
+info:
+  title: InfinitePay Checkout Payments API
+  version: '2026-08-01'
+  summary: Generate InfinitePay hosted checkout payment links and query their payment status.
+  description: 'The InfinitePay Integrated Checkout ("Checkout Integrado") API, operated by CloudWalk Inc. It has two public operations: create a hosted checkout link for a basket of items, and check the payment status of a previously created link. Payment is completed on the InfinitePay-hosted checkout page (checkout.infinitepay.io); the merchant is identified by its InfiniteTag `handle` rather than by an API key. Amounts are always integers in Brazilian cents (R$ 10,00 = 1000). Supported capture methods are `credit_card` (up to 12 installments) and `pix`.
+
+
+    PROVENANCE: this document was NOT published by CloudWalk. It is a faithful transcription of CloudWalk''s own live, public API reference at https://www.infinitepay.io/checkout-documentacao (fetched 2026-08-01), with every path, field name, type and example taken verbatim from that page. Both hosts were probed live on 2026-08-01 to confirm the routes exist (see x-evidence). No operation, field or response has been invented; where the published reference is silent (error catalogue, rate limits, sandbox) this spec is silent too.'
+  contact:
+    name: InfinitePay / CloudWalk partner integrations
+    email: parcerias@cloudwalk.io
+    url: https://www.infinitepay.io/desenvolvedores
+  termsOfService: https://www.infinitepay.io/legal/termos-de-uso
+servers:
+- url: https://api.checkout.infinitepay.io
+  description: Production checkout API host (the host named in the current published reference).
+- url: https://api.infinitepay.io/invoices/public/checkout
+  description: Legacy path-based host for the same two operations. Probed live 2026-08-01 and still answering (POST /links returned the same 400 handle-validation error).
+tags:
+- name: Payments
+  description: Query the payment status of a checkout link.
+paths:
+  /payment_check:
+    post:
+      tags:
+      - Payments
+      operationId: checkPaymentStatus
+      summary: Check the payment status of a checkout link
+      description: Returns whether a checkout link has been paid, the amount charged, the number of installments and the capture method. Used as the pull-based alternative to the webhook.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCheckRequest'
+            examples:
+              published:
+                value:
+                  handle: sua_infinite_tag
+                  order_nsu: '123456'
+                  transaction_nsu: UUID-que-recebeu
+                  slug: codigo-da-fatura
+      responses:
+        '200':
+          description: Payment status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentCheckResponse'
+              examples:
+                paidWithPix:
+                  value:
+                    success: true
+                    paid: true
+                    amount: 1500
+                    paid_amount: 1510
+                    installments: 1
+                    capture_method: pix
+        '404':
+          description: No matching invoice/transaction for the supplied identifiers. Observed live 2026-08-01 for an empty body.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notFound:
+                  value:
+                    success: false
+                    message: Not found
+components:
+  schemas:
+    PaymentCheckResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the request succeeded.
+        paid:
+          type: boolean
+          description: Whether the checkout link has been paid.
+        amount:
+          type: integer
+          description: Original amount in cents.
+        paid_amount:
+          type: integer
+          description: Amount actually paid in cents (may include installment fees passed to the buyer).
+        installments:
+          type: integer
+          description: Number of installments.
+        capture_method:
+          type: string
+          description: How the payment was captured.
+          enum:
+          - credit_card
+          - pix
+    Error:
+      type: object
+      description: The error envelope observed live on both hosts. CloudWalk publishes no error reference for this API; the shape below is what the API actually returned when probed on 2026-08-01.
+      properties:
+        success:
+          type: boolean
+          examples:
+          - false
+        message:
+          type: string
+          description: Human-readable error message (application-level errors).
+        error:
+          type: string
+          description: Alternate key returned by the routing layer for unknown paths.
+    PaymentCheckRequest:
+      type: object
+      required:
+      - handle
+      - order_nsu
+      - transaction_nsu
+      - slug
+      properties:
+        handle:
+          type: string
+          description: The merchant's InfiniteTag without the leading "$".
+        order_nsu:
+          type: string
+          description: The order number in the merchant's system.
+        transaction_nsu:
+          type: string
+          description: The unique transaction identifier returned after payment.
+        slug:
+          type: string
+          description: The InfinitePay invoice code.
+x-evidence:
+  fetched: '2026-08-01'
+  transcribed_from: https://www.infinitepay.io/checkout-documentacao
+  probes:
+  - url: https://api.checkout.infinitepay.io/
+    method: GET
+    http_status: 200
+    body: OK <timestamp>
+  - url: https://api.checkout.infinitepay.io/links
+    method: POST
+    request: '{}'
+    http_status: 400
+    body: '{"success":false,"message":"param is missing or the value is empty or invalid: handle"}'
+  - url: https://api.checkout.infinitepay.io/payment_check
+    method: POST
+    request: '{}'
+    http_status: 404
+    body: '{"success":false,"message":"Not found"}'
+  - url: https://api.infinitepay.io/invoices/public/checkout/links
+    method: POST
+    request: '{}'
+    http_status: 400
+    body: '{"success":false,"message":"param is missing or the value is empty or invalid: handle"}'
+  - url: https://api.checkout.infinitepay.io/openapi.json
+    method: GET
+    http_status: 404
+    note: provider publishes no machine-readable spec at any probed path
+  spec_search:
+  - path: /openapi.json
+    status: 404
+  - path: /openapi.yaml
+    status: 404
+  - path: /swagger.json
+    status: 404
+  - path: /api-docs
+    status: 401
+  - path: /redoc
+    status: 404

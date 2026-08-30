@@ -1,0 +1,152 @@
+openapi: 3.2.0
+info:
+  title: InfinitePay Checkout API
+  version: '2026-08-01'
+  summary: Generate InfinitePay hosted checkout payment links and query their payment status.
+  description: 'The InfinitePay Integrated Checkout ("Checkout Integrado") API, operated by CloudWalk Inc. It has two public operations: create a hosted checkout link for a basket of items, and check the payment status of a previously created link. Payment is completed on the InfinitePay-hosted checkout page (checkout.infinitepay.io); the merchant is identified by its InfiniteTag `handle` rather than by an API key. Amounts are always integers in Brazilian cents (R$ 10,00 = 1000). Supported capture methods are `credit_card` (up to 12 installments) and `pix`.
+
+
+    PROVENANCE: this document was NOT published by CloudWalk. It is a faithful transcription of CloudWalk''s own live, public API reference at https://www.infinitepay.io/checkout-documentacao (fetched 2026-08-01), with every path, field name, type and example taken verbatim from that page. Both hosts were probed live on 2026-08-01 to confirm the routes exist (see x-evidence). No operation, field or response has been invented; where the published reference is silent (error catalogue, rate limits, sandbox) this spec is silent too.'
+  contact:
+    name: InfinitePay / CloudWalk partner integrations
+    email: parcerias@cloudwalk.io
+    url: https://www.infinitepay.io/desenvolvedores
+  termsOfService: https://www.infinitepay.io/legal/termos-de-uso
+servers:
+- url: https://api.checkout.infinitepay.io
+  description: Production checkout API host (the host named in the current published reference).
+- url: https://api.infinitepay.io/invoices/public/checkout
+  description: Legacy path-based host for the same two operations. Probed live 2026-08-01 and still answering (POST /links returned the same 400 handle-validation error).
+tags:
+- name: InfinitePay Checkout API
+paths: {}
+webhooks:
+  paymentApproved:
+    post:
+      operationId: onPaymentApproved
+      summary: Payment approved notification
+      description: When a payment is approved InfinitePay POSTs this payload to the `webhook_url` supplied on the checkout link. The published reference asks the receiver to answer within about one second with 200 OK to acknowledge, or 400 Bad Request to have the notification retried.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentApprovedEvent'
+            examples:
+              approved:
+                value:
+                  invoice_slug: abc123
+                  amount: 1000
+                  paid_amount: 1010
+                  installments: 1
+                  capture_method: credit_card
+                  transaction_nsu: UUID
+                  order_nsu: UUID-do-pedido
+                  receipt_url: https://comprovante.com/123
+                  items:
+                  - quantity: 1
+                    price: 1000
+                    description: Produto de Exemplo
+      responses:
+        '200':
+          description: Notification acknowledged.
+        '400':
+          description: Receiver reported a problem; InfinitePay retries delivery.
+      tags:
+      - InfinitePay Checkout API
+components:
+  schemas:
+    Item:
+      type: object
+      required:
+      - quantity
+      - price
+      - description
+      properties:
+        quantity:
+          type: integer
+          description: Quantity of the item.
+          examples:
+          - 1
+        price:
+          type: integer
+          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
+          examples:
+          - 1000
+        description:
+          type: string
+          description: Item description shown on the checkout page.
+          examples:
+          - Produto de Exemplo
+    PaymentApprovedEvent:
+      type: object
+      properties:
+        invoice_slug:
+          type: string
+          examples:
+          - abc123
+        amount:
+          type: integer
+          description: Original amount in cents.
+        paid_amount:
+          type: integer
+          description: Amount paid in cents.
+        installments:
+          type: integer
+        capture_method:
+          type: string
+          enum:
+          - credit_card
+          - pix
+        transaction_nsu:
+          type: string
+          description: Unique transaction identifier (UUID format).
+        order_nsu:
+          type: string
+          description: The merchant order identifier supplied on the link.
+        receipt_url:
+          type: string
+          format: uri
+          description: Link to the payment receipt.
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+x-evidence:
+  fetched: '2026-08-01'
+  transcribed_from: https://www.infinitepay.io/checkout-documentacao
+  probes:
+  - url: https://api.checkout.infinitepay.io/
+    method: GET
+    http_status: 200
+    body: OK <timestamp>
+  - url: https://api.checkout.infinitepay.io/links
+    method: POST
+    request: '{}'
+    http_status: 400
+    body: '{"success":false,"message":"param is missing or the value is empty or invalid: handle"}'
+  - url: https://api.checkout.infinitepay.io/payment_check
+    method: POST
+    request: '{}'
+    http_status: 404
+    body: '{"success":false,"message":"Not found"}'
+  - url: https://api.infinitepay.io/invoices/public/checkout/links
+    method: POST
+    request: '{}'
+    http_status: 400
+    body: '{"success":false,"message":"param is missing or the value is empty or invalid: handle"}'
+  - url: https://api.checkout.infinitepay.io/openapi.json
+    method: GET
+    http_status: 404
+    note: provider publishes no machine-readable spec at any probed path
+  spec_search:
+  - path: /openapi.json
+    status: 404
+  - path: /openapi.yaml
+    status: 404
+  - path: /swagger.json
+    status: 404
+  - path: /api-docs
+    status: 401
+  - path: /redoc
+    status: 404
