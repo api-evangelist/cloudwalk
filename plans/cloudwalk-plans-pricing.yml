@@ -1,0 +1,61 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-09-20'
+method: searched
+source: https://www.infinitepay.io/taxas
+sources:
+- https://www.infinitepay.io/taxas
+provenance:
+  tool: planning/api-economics/harvest_pricing.py
+  run: 20260920T120546
+  grounding: every price_text was found verbatim in the fetched page text
+audience: business-product
+pricing_basis: ad-valorem
+published: true
+note: 'Brazilian merchant acquiring fee table: percentage rates per transaction, varying by monthly revenue
+  tier, card brand, installments and settlement speed. Also lists terminal purchase price.'
+plan_count: 7
+currency: BRL
+plans:
+- name: Plano Inicial (até 20 mil/mês) — Maquininha & InfiniteTap, em 1 dia útil
+  price_text: Débito 1,37% Crédito à vista 3,15% 12x 12,40%
+  currency: BRL
+  period: per-use
+  unit: por venda
+  included_quota: Pix GRÁTIS
+- name: Faturamento acima de 20 mil por mês
+  price_text: Pix GRÁTIS Débito 0,85% Crédito à vista 2,89% 12x 10,12%
+  currency: BRL
+  period: per-use
+  unit: por venda
+  included_quota: Pix GRÁTIS
+- name: Faturamento acima de 40 mil por mês
+  price_text: Pix GRÁTIS Débito 0,79% Crédito à vista 2,79% 12x 9,56%
+  currency: BRL
+  period: per-use
+  unit: por venda
+  included_quota: Pix GRÁTIS
+- name: Faturamento acima de 80 mil por mês
+  price_text: Pix GRÁTIS Débito 0,75% Crédito à vista 2,69% 12x 8,99%
+  currency: BRL
+  period: per-use
+  unit: por venda
+  included_quota: Pix GRÁTIS
+- name: InfiniteNitro (recebimento na hora)
+  price_text: Pix GRÁTIS Débito 2,79% Crédito à vista 5,99%
+  currency: BRL
+  period: per-use
+  unit: por venda
+- name: Link de Pagamento — Na hora (Visa, Mastercard e Elo)
+  price_text: Pix GRÁTIS Crédito à vista 5,49%
+  price: 5.49
+  currency: BRL
+  period: per-use
+  unit: por venda
+  included_quota: Pix GRÁTIS
+- name: Maquininha Smart (hardware)
+  price_text: 12x R$16,58 ou R$199 no Pix
+  currency: BRL
+  period: one-time
+  unit: device
+rate_limit_statements:
+- Disponível 24 horas por dia, sem limite de operações mensais.

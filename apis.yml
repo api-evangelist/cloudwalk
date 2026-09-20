@@ -141,6 +141,8 @@ apis:
   - type: DataModel
     url: data-model/cloudwalk-data-model.yml
 common:
+- type: Plans
+  url: plans/cloudwalk-plans-pricing.yml
 - type: CapabilityMap
   url: capabilities/cloudwalk-capability-edges.yml
   name: CloudWalk Business Capability Map
