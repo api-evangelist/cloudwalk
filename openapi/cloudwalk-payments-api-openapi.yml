@@ -3,10 +3,7 @@ info:
   title: InfinitePay Checkout Payments API
   version: '2026-08-01'
   summary: Generate InfinitePay hosted checkout payment links and query their payment status.
-  description: 'The InfinitePay Integrated Checkout ("Checkout Integrado") API, operated by CloudWalk Inc. It has two public operations: create a hosted checkout link for a basket of items, and check the payment status of a previously created link. Payment is completed on the InfinitePay-hosted checkout page (checkout.infinitepay.io); the merchant is identified by its InfiniteTag `handle` rather than by an API key. Amounts are always integers in Brazilian cents (R$ 10,00 = 1000). Supported capture methods are `credit_card` (up to 12 installments) and `pix`.
-
-
-    PROVENANCE: this document was NOT published by CloudWalk. It is a faithful transcription of CloudWalk''s own live, public API reference at https://www.infinitepay.io/checkout-documentacao (fetched 2026-08-01), with every path, field name, type and example taken verbatim from that page. Both hosts were probed live on 2026-08-01 to confirm the routes exist (see x-evidence). No operation, field or response has been invented; where the published reference is silent (error catalogue, rate limits, sandbox) this spec is silent too.'
+  description: The InfinitePay Integrated Checkout ("Checkout Integrado") API, operated by CloudWalk Inc.
   contact:
     name: InfinitePay / CloudWalk partner integrations
     email: parcerias@cloudwalk.io
@@ -70,30 +67,6 @@ paths:
                     message: Not found
 components:
   schemas:
-    PaymentCheckResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Whether the request succeeded.
-        paid:
-          type: boolean
-          description: Whether the checkout link has been paid.
-        amount:
-          type: integer
-          description: Original amount in cents.
-        paid_amount:
-          type: integer
-          description: Amount actually paid in cents (may include installment fees passed to the buyer).
-        installments:
-          type: integer
-          description: Number of installments.
-        capture_method:
-          type: string
-          description: How the payment was captured.
-          enum:
-          - credit_card
-          - pix
     Error:
       type: object
       description: The error envelope observed live on both hosts. CloudWalk publishes no error reference for this API; the shape below is what the API actually returned when probed on 2026-08-01.
@@ -128,6 +101,30 @@ components:
         slug:
           type: string
           description: The InfinitePay invoice code.
+    PaymentCheckResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the request succeeded.
+        paid:
+          type: boolean
+          description: Whether the checkout link has been paid.
+        amount:
+          type: integer
+          description: Original amount in cents.
+        paid_amount:
+          type: integer
+          description: Amount actually paid in cents (may include installment fees passed to the buyer).
+        installments:
+          type: integer
+          description: Number of installments.
+        capture_method:
+          type: string
+          description: How the payment was captured.
+          enum:
+          - credit_card
+          - pix
 x-evidence:
   fetched: '2026-08-01'
   transcribed_from: https://www.infinitepay.io/checkout-documentacao

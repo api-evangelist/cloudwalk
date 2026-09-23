@@ -3,10 +3,7 @@ info:
   title: InfinitePay Checkout API
   version: '2026-08-01'
   summary: Generate InfinitePay hosted checkout payment links and query their payment status.
-  description: 'The InfinitePay Integrated Checkout ("Checkout Integrado") API, operated by CloudWalk Inc. It has two public operations: create a hosted checkout link for a basket of items, and check the payment status of a previously created link. Payment is completed on the InfinitePay-hosted checkout page (checkout.infinitepay.io); the merchant is identified by its InfiniteTag `handle` rather than by an API key. Amounts are always integers in Brazilian cents (R$ 10,00 = 1000). Supported capture methods are `credit_card` (up to 12 installments) and `pix`.
-
-
-    PROVENANCE: this document was NOT published by CloudWalk. It is a faithful transcription of CloudWalk''s own live, public API reference at https://www.infinitepay.io/checkout-documentacao (fetched 2026-08-01), with every path, field name, type and example taken verbatim from that page. Both hosts were probed live on 2026-08-01 to confirm the routes exist (see x-evidence). No operation, field or response has been invented; where the published reference is silent (error catalogue, rate limits, sandbox) this spec is silent too.'
+  description: The InfinitePay Integrated Checkout ("Checkout Integrado") API, operated by CloudWalk Inc.
   contact:
     name: InfinitePay / CloudWalk partner integrations
     email: parcerias@cloudwalk.io
@@ -56,28 +53,6 @@ webhooks:
       - InfinitePay Checkout API
 components:
   schemas:
-    Item:
-      type: object
-      required:
-      - quantity
-      - price
-      - description
-      properties:
-        quantity:
-          type: integer
-          description: Quantity of the item.
-          examples:
-          - 1
-        price:
-          type: integer
-          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
-          examples:
-          - 1000
-        description:
-          type: string
-          description: Item description shown on the checkout page.
-          examples:
-          - Produto de Exemplo
     PaymentApprovedEvent:
       type: object
       properties:
@@ -112,6 +87,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Item'
+    Item:
+      type: object
+      required:
+      - quantity
+      - price
+      - description
+      properties:
+        quantity:
+          type: integer
+          description: Quantity of the item.
+          examples:
+          - 1
+        price:
+          type: integer
+          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
+          examples:
+          - 1000
+        description:
+          type: string
+          description: Item description shown on the checkout page.
+          examples:
+          - Produto de Exemplo
 x-evidence:
   fetched: '2026-08-01'
   transcribed_from: https://www.infinitepay.io/checkout-documentacao

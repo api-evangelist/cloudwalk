@@ -1,0 +1,26 @@
+{
+  "provider": "cloudwalk",
+  "sources": [
+    "_original/cloudwalk-infinitepay-checkout-openapi.yml"
+  ],
+  "outputs": [
+    "cloudwalk-checkout-links-api-openapi.yml",
+    "cloudwalk-infinitepay-checkout-api-api-openapi.yml",
+    "cloudwalk-payments-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "cloudwalk-infinitepay-checkout-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "cloudwalk-infinitepay-checkout-openapi.yml: tagged webhooks POST paymentApproved -> InfinitePay Checkout API",
+    "cloudwalk-infinitepay-checkout-openapi.yml: declared missing tag: InfinitePay Checkout API",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "cloudwalk-checkout-links-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "cloudwalk-infinitepay-checkout-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "cloudwalk-payments-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

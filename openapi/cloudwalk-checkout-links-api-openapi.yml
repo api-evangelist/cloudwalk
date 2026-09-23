@@ -3,10 +3,7 @@ info:
   title: InfinitePay Checkout Checkout Links API
   version: '2026-08-01'
   summary: Generate InfinitePay hosted checkout payment links and query their payment status.
-  description: 'The InfinitePay Integrated Checkout ("Checkout Integrado") API, operated by CloudWalk Inc. It has two public operations: create a hosted checkout link for a basket of items, and check the payment status of a previously created link. Payment is completed on the InfinitePay-hosted checkout page (checkout.infinitepay.io); the merchant is identified by its InfiniteTag `handle` rather than by an API key. Amounts are always integers in Brazilian cents (R$ 10,00 = 1000). Supported capture methods are `credit_card` (up to 12 installments) and `pix`.
-
-
-    PROVENANCE: this document was NOT published by CloudWalk. It is a faithful transcription of CloudWalk''s own live, public API reference at https://www.infinitepay.io/checkout-documentacao (fetched 2026-08-01), with every path, field name, type and example taken verbatim from that page. Both hosts were probed live on 2026-08-01 to confirm the routes exist (see x-evidence). No operation, field or response has been invented; where the published reference is silent (error catalogue, rate limits, sandbox) this spec is silent too.'
+  description: The InfinitePay Integrated Checkout ("Checkout Integrado") API, operated by CloudWalk Inc.
   contact:
     name: InfinitePay / CloudWalk partner integrations
     email: parcerias@cloudwalk.io
@@ -88,31 +85,6 @@ paths:
                     message: 'param is missing or the value is empty or invalid: handle'
 components:
   schemas:
-    Address:
-      type: object
-      description: Optional Brazilian delivery address used to pre-fill the hosted checkout form.
-      properties:
-        cep:
-          type: string
-          description: Brazilian postal code
-          examples:
-          - '12345678'
-        street:
-          type: string
-          examples:
-          - Rua das Flores
-        neighborhood:
-          type: string
-          examples:
-          - Centro
-        number:
-          type: string
-          examples:
-          - '123'
-        complement:
-          type: string
-          examples:
-          - Apto 45
     CreateCheckoutLinkResponse:
       type: object
       description: The published reference shows two response shapes for this operation on the same page — `{checkout_url}` in the interactive section and `{link, slug}` in the API summary block. Both are recorded; `checkout_url` is the one shown by the live interactive builder.
@@ -132,28 +104,6 @@ components:
           description: The InfinitePay invoice code for the generated link.
           examples:
           - abcdef123
-    Item:
-      type: object
-      required:
-      - quantity
-      - price
-      - description
-      properties:
-        quantity:
-          type: integer
-          description: Quantity of the item.
-          examples:
-          - 1
-        price:
-          type: integer
-          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
-          examples:
-          - 1000
-        description:
-          type: string
-          description: Item description shown on the checkout page.
-          examples:
-          - Produto de Exemplo
     Error:
       type: object
       description: The error envelope observed live on both hosts. CloudWalk publishes no error reference for this API; the shape below is what the API actually returned when probed on 2026-08-01.
@@ -185,6 +135,53 @@ components:
           type: string
           examples:
           - '+5511999887766'
+    Address:
+      type: object
+      description: Optional Brazilian delivery address used to pre-fill the hosted checkout form.
+      properties:
+        cep:
+          type: string
+          description: Brazilian postal code
+          examples:
+          - '12345678'
+        street:
+          type: string
+          examples:
+          - Rua das Flores
+        neighborhood:
+          type: string
+          examples:
+          - Centro
+        number:
+          type: string
+          examples:
+          - '123'
+        complement:
+          type: string
+          examples:
+          - Apto 45
+    Item:
+      type: object
+      required:
+      - quantity
+      - price
+      - description
+      properties:
+        quantity:
+          type: integer
+          description: Quantity of the item.
+          examples:
+          - 1
+        price:
+          type: integer
+          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
+          examples:
+          - 1000
+        description:
+          type: string
+          description: Item description shown on the checkout page.
+          examples:
+          - Produto de Exemplo
     CreateCheckoutLinkRequest:
       type: object
       required:
