@@ -85,6 +85,28 @@ paths:
                     message: 'param is missing or the value is empty or invalid: handle'
 components:
   schemas:
+    Item:
+      type: object
+      required:
+      - quantity
+      - price
+      - description
+      properties:
+        quantity:
+          type: integer
+          description: Quantity of the item.
+          examples:
+          - 1
+        price:
+          type: integer
+          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
+          examples:
+          - 1000
+        description:
+          type: string
+          description: Item description shown on the checkout page.
+          examples:
+          - Produto de Exemplo
     CreateCheckoutLinkResponse:
       type: object
       description: The published reference shows two response shapes for this operation on the same page — `{checkout_url}` in the interactive section and `{link, slug}` in the API summary block. Both are recorded; `checkout_url` is the one shown by the live interactive builder.
@@ -135,53 +157,6 @@ components:
           type: string
           examples:
           - '+5511999887766'
-    Address:
-      type: object
-      description: Optional Brazilian delivery address used to pre-fill the hosted checkout form.
-      properties:
-        cep:
-          type: string
-          description: Brazilian postal code
-          examples:
-          - '12345678'
-        street:
-          type: string
-          examples:
-          - Rua das Flores
-        neighborhood:
-          type: string
-          examples:
-          - Centro
-        number:
-          type: string
-          examples:
-          - '123'
-        complement:
-          type: string
-          examples:
-          - Apto 45
-    Item:
-      type: object
-      required:
-      - quantity
-      - price
-      - description
-      properties:
-        quantity:
-          type: integer
-          description: Quantity of the item.
-          examples:
-          - 1
-        price:
-          type: integer
-          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
-          examples:
-          - 1000
-        description:
-          type: string
-          description: Item description shown on the checkout page.
-          examples:
-          - Produto de Exemplo
     CreateCheckoutLinkRequest:
       type: object
       required:
@@ -223,6 +198,31 @@ components:
       x-alias-fields:
         items:
         - itens
+    Address:
+      type: object
+      description: Optional Brazilian delivery address used to pre-fill the hosted checkout form.
+      properties:
+        cep:
+          type: string
+          description: Brazilian postal code
+          examples:
+          - '12345678'
+        street:
+          type: string
+          examples:
+          - Rua das Flores
+        neighborhood:
+          type: string
+          examples:
+          - Centro
+        number:
+          type: string
+          examples:
+          - '123'
+        complement:
+          type: string
+          examples:
+          - Apto 45
 x-evidence:
   fetched: '2026-08-01'
   transcribed_from: https://www.infinitepay.io/checkout-documentacao

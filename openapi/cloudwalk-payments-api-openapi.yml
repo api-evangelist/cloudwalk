@@ -67,20 +67,6 @@ paths:
                     message: Not found
 components:
   schemas:
-    Error:
-      type: object
-      description: The error envelope observed live on both hosts. CloudWalk publishes no error reference for this API; the shape below is what the API actually returned when probed on 2026-08-01.
-      properties:
-        success:
-          type: boolean
-          examples:
-          - false
-        message:
-          type: string
-          description: Human-readable error message (application-level errors).
-        error:
-          type: string
-          description: Alternate key returned by the routing layer for unknown paths.
     PaymentCheckRequest:
       type: object
       required:
@@ -125,6 +111,20 @@ components:
           enum:
           - credit_card
           - pix
+    Error:
+      type: object
+      description: The error envelope observed live on both hosts. CloudWalk publishes no error reference for this API; the shape below is what the API actually returned when probed on 2026-08-01.
+      properties:
+        success:
+          type: boolean
+          examples:
+          - false
+        message:
+          type: string
+          description: Human-readable error message (application-level errors).
+        error:
+          type: string
+          description: Alternate key returned by the routing layer for unknown paths.
 x-evidence:
   fetched: '2026-08-01'
   transcribed_from: https://www.infinitepay.io/checkout-documentacao

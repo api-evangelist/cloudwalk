@@ -53,6 +53,28 @@ webhooks:
       - InfinitePay Checkout API
 components:
   schemas:
+    Item:
+      type: object
+      required:
+      - quantity
+      - price
+      - description
+      properties:
+        quantity:
+          type: integer
+          description: Quantity of the item.
+          examples:
+          - 1
+        price:
+          type: integer
+          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
+          examples:
+          - 1000
+        description:
+          type: string
+          description: Item description shown on the checkout page.
+          examples:
+          - Produto de Exemplo
     PaymentApprovedEvent:
       type: object
       properties:
@@ -87,28 +109,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Item'
-    Item:
-      type: object
-      required:
-      - quantity
-      - price
-      - description
-      properties:
-        quantity:
-          type: integer
-          description: Quantity of the item.
-          examples:
-          - 1
-        price:
-          type: integer
-          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
-          examples:
-          - 1000
-        description:
-          type: string
-          description: Item description shown on the checkout page.
-          examples:
-          - Produto de Exemplo
 x-evidence:
   fetched: '2026-08-01'
   transcribed_from: https://www.infinitepay.io/checkout-documentacao
