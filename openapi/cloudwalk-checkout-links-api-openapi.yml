@@ -85,47 +85,6 @@ paths:
                     message: 'param is missing or the value is empty or invalid: handle'
 components:
   schemas:
-    Item:
-      type: object
-      required:
-      - quantity
-      - price
-      - description
-      properties:
-        quantity:
-          type: integer
-          description: Quantity of the item.
-          examples:
-          - 1
-        price:
-          type: integer
-          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
-          examples:
-          - 1000
-        description:
-          type: string
-          description: Item description shown on the checkout page.
-          examples:
-          - Produto de Exemplo
-    CreateCheckoutLinkResponse:
-      type: object
-      description: The published reference shows two response shapes for this operation on the same page — `{checkout_url}` in the interactive section and `{link, slug}` in the API summary block. Both are recorded; `checkout_url` is the one shown by the live interactive builder.
-      properties:
-        checkout_url:
-          type: string
-          format: uri
-          description: The InfinitePay-hosted checkout page URL to send the buyer to.
-          examples:
-          - https://checkout.infinitepay.io/colakids/1RxANX7tdF
-        link:
-          type: string
-          format: uri
-          description: The generated payment link (alternate field name shown in the reference).
-        slug:
-          type: string
-          description: The InfinitePay invoice code for the generated link.
-          examples:
-          - abcdef123
     Error:
       type: object
       description: The error envelope observed live on both hosts. CloudWalk publishes no error reference for this API; the shape below is what the API actually returned when probed on 2026-08-01.
@@ -140,23 +99,6 @@ components:
         error:
           type: string
           description: Alternate key returned by the routing layer for unknown paths.
-    Customer:
-      type: object
-      description: Optional buyer details used to pre-fill the hosted checkout form.
-      properties:
-        name:
-          type: string
-          examples:
-          - João Silva
-        email:
-          type: string
-          format: email
-          examples:
-          - joao@email.com
-        phone_number:
-          type: string
-          examples:
-          - '+5511999887766'
     CreateCheckoutLinkRequest:
       type: object
       required:
@@ -198,6 +140,47 @@ components:
       x-alias-fields:
         items:
         - itens
+    Item:
+      type: object
+      required:
+      - quantity
+      - price
+      - description
+      properties:
+        quantity:
+          type: integer
+          description: Quantity of the item.
+          examples:
+          - 1
+        price:
+          type: integer
+          description: Unit price in Brazilian cents (R$ 10,00 = 1000).
+          examples:
+          - 1000
+        description:
+          type: string
+          description: Item description shown on the checkout page.
+          examples:
+          - Produto de Exemplo
+    CreateCheckoutLinkResponse:
+      type: object
+      description: The published reference shows two response shapes for this operation on the same page — `{checkout_url}` in the interactive section and `{link, slug}` in the API summary block. Both are recorded; `checkout_url` is the one shown by the live interactive builder.
+      properties:
+        checkout_url:
+          type: string
+          format: uri
+          description: The InfinitePay-hosted checkout page URL to send the buyer to.
+          examples:
+          - https://checkout.infinitepay.io/colakids/1RxANX7tdF
+        link:
+          type: string
+          format: uri
+          description: The generated payment link (alternate field name shown in the reference).
+        slug:
+          type: string
+          description: The InfinitePay invoice code for the generated link.
+          examples:
+          - abcdef123
     Address:
       type: object
       description: Optional Brazilian delivery address used to pre-fill the hosted checkout form.
@@ -223,6 +206,23 @@ components:
           type: string
           examples:
           - Apto 45
+    Customer:
+      type: object
+      description: Optional buyer details used to pre-fill the hosted checkout form.
+      properties:
+        name:
+          type: string
+          examples:
+          - João Silva
+        email:
+          type: string
+          format: email
+          examples:
+          - joao@email.com
+        phone_number:
+          type: string
+          examples:
+          - '+5511999887766'
 x-evidence:
   fetched: '2026-08-01'
   transcribed_from: https://www.infinitepay.io/checkout-documentacao
