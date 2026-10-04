@@ -67,6 +67,30 @@ paths:
                     message: Not found
 components:
   schemas:
+    PaymentCheckResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the request succeeded.
+        paid:
+          type: boolean
+          description: Whether the checkout link has been paid.
+        amount:
+          type: integer
+          description: Original amount in cents.
+        paid_amount:
+          type: integer
+          description: Amount actually paid in cents (may include installment fees passed to the buyer).
+        installments:
+          type: integer
+          description: Number of installments.
+        capture_method:
+          type: string
+          description: How the payment was captured.
+          enum:
+          - credit_card
+          - pix
     Error:
       type: object
       description: The error envelope observed live on both hosts. CloudWalk publishes no error reference for this API; the shape below is what the API actually returned when probed on 2026-08-01.
@@ -101,30 +125,6 @@ components:
         slug:
           type: string
           description: The InfinitePay invoice code.
-    PaymentCheckResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Whether the request succeeded.
-        paid:
-          type: boolean
-          description: Whether the checkout link has been paid.
-        amount:
-          type: integer
-          description: Original amount in cents.
-        paid_amount:
-          type: integer
-          description: Amount actually paid in cents (may include installment fees passed to the buyer).
-        installments:
-          type: integer
-          description: Number of installments.
-        capture_method:
-          type: string
-          description: How the payment was captured.
-          enum:
-          - credit_card
-          - pix
 x-evidence:
   fetched: '2026-08-01'
   transcribed_from: https://www.infinitepay.io/checkout-documentacao
