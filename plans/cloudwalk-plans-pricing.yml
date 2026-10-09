@@ -63,3 +63,68 @@ plans:
   unit: device
 rate_limit_statements:
 - Disponível 24 horas por dia, sem limite de operações mensais.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - metered
+  - subscription
+  units:
+  - object
+  plans:
+  - name: Plano Inicial (até 20 mil/mês) — Maquininha & InfiniteTap, em 1 dia útil
+    access: other
+    model: unstated
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: Faturamento acima de 20 mil por mês
+    access: other
+    model: unstated
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: Faturamento acima de 40 mil por mês
+    access: other
+    model: unstated
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: Faturamento acima de 80 mil por mês
+    access: other
+    model: unstated
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: InfiniteNitro (recebimento na hora)
+    access: other
+    model: unstated
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: Link de Pagamento — Na hora (Visa, Mastercard e Elo)
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: Maquininha Smart (hardware)
+    access: other
+    model: metered
+    model_how: derived
+    units:
+    - object
+    periods:
+    - one-time
