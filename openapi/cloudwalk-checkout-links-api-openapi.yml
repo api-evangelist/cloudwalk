@@ -85,25 +85,37 @@ paths:
                     message: 'param is missing or the value is empty or invalid: handle'
 components:
   schemas:
-    CreateCheckoutLinkResponse:
+    Error:
       type: object
-      description: The published reference shows two response shapes for this operation on the same page — `{checkout_url}` in the interactive section and `{link, slug}` in the API summary block. Both are recorded; `checkout_url` is the one shown by the live interactive builder.
+      description: The error envelope observed live on both hosts. CloudWalk publishes no error reference for this API; the shape below is what the API actually returned when probed on 2026-08-01.
       properties:
-        checkout_url:
-          type: string
-          format: uri
-          description: The InfinitePay-hosted checkout page URL to send the buyer to.
+        success:
+          type: boolean
           examples:
-          - https://checkout.infinitepay.io/colakids/1RxANX7tdF
-        link:
+          - false
+        message:
           type: string
-          format: uri
-          description: The generated payment link (alternate field name shown in the reference).
-        slug:
+          description: Human-readable error message (application-level errors).
+        error:
           type: string
-          description: The InfinitePay invoice code for the generated link.
+          description: Alternate key returned by the routing layer for unknown paths.
+    Customer:
+      type: object
+      description: Optional buyer details used to pre-fill the hosted checkout form.
+      properties:
+        name:
+          type: string
           examples:
-          - abcdef123
+          - João Silva
+        email:
+          type: string
+          format: email
+          examples:
+          - joao@email.com
+        phone_number:
+          type: string
+          examples:
+          - '+5511999887766'
     CreateCheckoutLinkRequest:
       type: object
       required:
@@ -145,23 +157,25 @@ components:
       x-alias-fields:
         items:
         - itens
-    Customer:
+    CreateCheckoutLinkResponse:
       type: object
-      description: Optional buyer details used to pre-fill the hosted checkout form.
+      description: The published reference shows two response shapes for this operation on the same page — `{checkout_url}` in the interactive section and `{link, slug}` in the API summary block. Both are recorded; `checkout_url` is the one shown by the live interactive builder.
       properties:
-        name:
+        checkout_url:
           type: string
+          format: uri
+          description: The InfinitePay-hosted checkout page URL to send the buyer to.
           examples:
-          - João Silva
-        email:
+          - https://checkout.infinitepay.io/colakids/1RxANX7tdF
+        link:
           type: string
-          format: email
-          examples:
-          - joao@email.com
-        phone_number:
+          format: uri
+          description: The generated payment link (alternate field name shown in the reference).
+        slug:
           type: string
+          description: The InfinitePay invoice code for the generated link.
           examples:
-          - '+5511999887766'
+          - abcdef123
     Address:
       type: object
       description: Optional Brazilian delivery address used to pre-fill the hosted checkout form.
@@ -187,20 +201,6 @@ components:
           type: string
           examples:
           - Apto 45
-    Error:
-      type: object
-      description: The error envelope observed live on both hosts. CloudWalk publishes no error reference for this API; the shape below is what the API actually returned when probed on 2026-08-01.
-      properties:
-        success:
-          type: boolean
-          examples:
-          - false
-        message:
-          type: string
-          description: Human-readable error message (application-level errors).
-        error:
-          type: string
-          description: Alternate key returned by the routing layer for unknown paths.
     Item:
       type: object
       required:
