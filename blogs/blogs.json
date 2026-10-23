@@ -5,8 +5,15 @@
       "source": "https://www.infinitepay.io/blog",
       "feed_url": "https://www.infinitepay.io/blog/rss.xml",
       "title": "",
-      "saved": 60,
+      "saved": 0,
       "method": "discovered"
+    },
+    {
+      "source": "https://www.infinitepay.io/blog/rss.xml",
+      "feed_url": "https://www.infinitepay.io/blog/rss.xml",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
     },
     {
       "source": "https://ajuda.infinitepay.io/pt-BR/feed.xml",
@@ -16,8 +23,8 @@
       "method": "feed"
     }
   ],
-  "post_count": 146,
-  "fetched": "2026-10-10T13:15:00Z",
+  "post_count": 185,
+  "fetched": "2026-10-17T14:53:57Z",
   "feed_nature": "undetermined",
   "feed_nature_basis": null,
   "feed_nature_note": "Whether these posts are the vendor publishing or its support community, decided on the URL path grammar of the saved posts -- not the hostname, which carries both on Khoros, and not author diversity, which flags large vendor blogs as forums. 'undetermined' means undetermined."
