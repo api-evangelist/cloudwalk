@@ -64,63 +64,138 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-CloudWalk, Inc. is a payments and financial-infrastructure company (Sunnyvale, CA and São
-Paulo, Brazil) building an AI-native transaction layer for small businesses. It operates
-three brands: **InfinitePay** (Brazilian acquiring, digital banking, Tap to Pay, hosted
-checkout, Pix, credit), **JIM** (phone-as-POS for self-employed workers in the US) and
-**Pierre** (personal-finance intelligence on Brazilian Open Finance).
+CloudWalk, Inc. is a Sunnyvale- and São Paulo-based payments and financial-infrastructure company that builds an AI-native transaction layer for small businesses. It operates three consumer-facing brands: InfinitePay, its Brazilian acquirer and digital-banking platform (card machines, Tap to Pay, hosted checkout, payment links, Pix, PJ accounts, credit and CDB); JIM, a phone-as-POS operating system for self-employed workers in the United States; and Pierre, a personal-finance intelligence product built on Brazilian Open Finance. Its public developer surface is deliberately small and integration-shaped rather than platform-shaped: an Integrated Checkout REST API on api.checkout.infinitepay.io that creates hosted payment links and checks their status, an approved-payment webhook, and an InfiniteTap deeplink contract that hands a Tap-to-Pay transaction from a third-party POS app to the InfinitePay mobile app and back. CloudWalk publishes no OpenAPI, no machine-readable discovery documents and no MCP or agent surface. The legal entity behind InfinitePay is CLOUDWALK INSTITUIÇÃO DE PAGAMENTO E SERVIÇOS LTDA (CNPJ 18.189.547/0001-42), a Brazilian payment institution supervised by the Banco Central do Brasil.
 
-- https://www.cloudwalk.io/
-- Developers: https://www.infinitepay.io/desenvolvedores
+**Areas:** Company · Payments · Financial Services · Fintech · Checkout · Point-of-Sale · Acquiring · Pix · Brazil · Banking · Webhook · Tap to Pay
 
-## Public API surface
+## CloudWalk on APIs.io
 
-| Surface | What it is |
+Everything profiled for CloudWalk is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/cloudwalk/](https://apis.io/providers/cloudwalk/)** — or go straight to one of the APIs or properties below.
+
+### APIs (3)
+
+- [CloudWalk Checkout Links API](https://apis.io/apis/cloudwalk/cloudwalk-checkout-links-api/) — Create InfinitePay-hosted checkout payment links.
+- [CloudWalk InfinitePay Checkout API](https://apis.io/apis/cloudwalk/cloudwalk-infinitepay-checkout-api-api/) — The InfinitePay Checkout API API from CloudWalk — 0 operation(s) for infinitepay checkout api.
+- [CloudWalk Payments API](https://apis.io/apis/cloudwalk/cloudwalk-payments-api/) — Query the payment status of a checkout link.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Cloudwalk Infinitepay Webhooks](https://apis.io/asyncapis/cloudwalk/cloudwalk-infinitepay-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [infinitepay-checkout](https://apis.io/servers/cloudwalk/infinitepay-checkout/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Cloudwalk Agentic Access](https://apis.io/agentic-access/cloudwalk/cloudwalk-agentic-access/)
+
+#### Collections (1)
+
+Postman and Open Collection request collections.
+
+- [InfinitePay Checkout API](https://apis.io/collections/cloudwalk/open-cloudwalk-infinitepay-checkout/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Cloudwalk Infinitepay Checkout Overlay](https://apis.io/overlays/cloudwalk/cloudwalk-infinitepay-checkout-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Cloudwalk Authentication](https://apis.io/security/cloudwalk/cloudwalk-authentication/)
+- [Cloudwalk Domain Security](https://apis.io/security/cloudwalk/cloudwalk-domain-security/)
+- [Cloudwalk Vulnerability Disclosure](https://apis.io/security/cloudwalk/cloudwalk-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Cloudwalk Plans Pricing](https://apis.io/plans/cloudwalk/cloudwalk-plans-pricing/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.cloudwalk.io/)
+- [Documentation](https://www.infinitepay.io/checkout-documentacao)
+- [Getting started](https://www.infinitepay.io/checkout)
+- [API reference](https://www.infinitepay.io/checkout-documentacao)
+- [Pricing](https://www.infinitepay.io/taxas)
+- [Sign up](https://app.infinitepay.io)
+- [Support](https://ajuda.infinitepay.io/pt-BR/)
+- [Blog](https://www.infinitepay.io/blog)
+- [Security](https://www.infinitepay.io/security)
+- [Compliance](https://www.infinitepay.io/legal/politica-de-seguranca-cibernetica)
+- [Terms of service](https://www.infinitepay.io/legal/termos-de-uso)
+- [Privacy policy](https://www.infinitepay.io/legal/aviso-de-privacidade)
+- [GitHub](https://github.com/cloudwalk)
+- [Status](https://status.infinitepay.io/)
+
+## API Evangelist rating
+
+**Kin Score 55.7** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
 |---|---|
-| **InfinitePay Checkout API** — `https://api.checkout.infinitepay.io` | Two JSON operations: `POST /links` creates a hosted checkout payment link, `POST /payment_check` returns its payment status. [Reference](https://www.infinitepay.io/checkout-documentacao) |
-| **`payment_approved` webhook** | One event, POSTed to the `webhook_url` set on a link. Answer `200` to acknowledge, `400` to be retried. |
-| **InfiniteTap deeplink** — `infinitepaydash://infinitetap-app` | Hands a Tap-to-Pay card transaction from a third-party POS app to the InfinitePay mobile app and back. [Reference](https://www.infinitepay.io/checkout-tap) |
+| Discoverability | 74.1 |
+| Contract quality | 57.2 |
+| Contract governance | 4.5 |
+| Operational transparency | 36.8 |
+| Developer ergonomics | 66.1 |
+| Access clarity | 71.1 |
 
-## What CloudWalk publishes — and does not
+**Agent readiness 30.4** — agent-ready
 
-- **No OpenAPI, Swagger, AsyncAPI or GraphQL.** Every candidate spec path was probed on every
-  API and docs host (`/openapi.json`, `/openapi.yaml`, `/swagger.json`, `/api-docs`, `/docs`,
-  `/redoc`) and all missed; `/api-docs` returns `401`, an access-controlled internal surface.
-  The former documentation host `docs.infinitepay.io` no longer resolves in DNS.
-- **No `/.well-known/` documents at all** — no `security.txt`, OIDC/OAuth metadata,
-  `api-catalog`, `ai-plugin.json`, or A2A agent card at either the canonical or legacy path.
-- **No MCP server** and **no `llms.txt`**.
-- **No authentication** on the public API. The merchant is identified by its public
-  InfiniteTag `handle` in the request body — no key, token, OAuth or webhook signature.
-- **No versioning, deprecation policy, changelog, SLA, rate-limit documentation, error
-  reference or sandbox.**
-- It **does** run a live status page (https://status.infinitepay.io/), a named
-  responsible-disclosure program (security@cloudwalk.io, one-business-day acknowledgement),
-  and the full BACEN-mandated regulatory policy set for a supervised Brazilian payment
-  institution.
-
-## Artifacts in this repo
-
-Everything below was produced by the API Evangelist enrichment pipeline (2026-08-01), not
-published by CloudWalk. The OpenAPI is a faithful transcription of CloudWalk's own live
-public reference, with live probe evidence recorded in `x-evidence`.
-
-| Path | What |
+| Agent-readiness dimension | Result |
 |---|---|
-| `openapi/` | OpenAPI 3.1 for the Checkout API (2 operations + 1 webhook) |
-| `overlays/` | The API Evangelist enhancements over that spec |
-| `asyncapi/` | The webhook catalogue (no AsyncAPI is published) |
-| `conventions/` | Auth style, money units, error envelope, versioning, and the full InfiniteTap deeplink parameter contract |
-| `authentication/` | The (absent) auth model, plus the undocumented `/v2/cards/tokenize` endpoint observed on `authorizer.infinitepay.io` |
-| `errors/` | Error responses observed live; CloudWalk publishes no error reference |
-| `lifecycle/` | Status page, the `api.infinitepay.io` → `api.checkout.infinitepay.io` host migration, and the missing policies |
-| `data-model/` | The entity graph |
-| `components/` | Hosted checkout and app-hosted Tap surfaces |
-| `conformance/` | Standards conformance plus the BACEN regulatory compliance set |
-| `packages/` | First-party POS/plugin libraries and community SDKs |
-| `security/` | Domain security probe, and the responsible-disclosure program |
-| `well-known/` | The verified-empty discovery surface |
-| `agentic-access/` | Recommended `x-agentic-access` contracts per operation |
-| `skills/` | Three packaged agent skills grounded in real operationIds |
-| `mcp/` | Candidate tool surface only — CloudWalk operates no MCP server, so no `MCPServer` pointer is wired |
-| `llms/` | Generated `llms.txt` |
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | — |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 32.1** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/cloudwalk/](https://apis.io/providers/cloudwalk/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for CloudWalk: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/cloudwalk/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
